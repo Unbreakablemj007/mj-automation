@@ -17,14 +17,14 @@ const S={
   start:'start',mon:m=>'mo '+m,book:'Book a free call',wa:'WhatsApp',li:'LinkedIn',gh:'GitHub',email:'Email',copy:'Copy email',copied:'Copied',
   waText:'Hi Mohammad, I would like to talk about an automation.',langBtn:'عربي',
   send:'Send message',sending:'Sending…',sent:'Thanks! Your message was sent. I will get back to you soon.',
-  invalid:'Please fill in your name, a valid email and a message.',fail:'Sorry, the message could not be sent. Please email me directly at ',langLabel:'عرض الموقع بالعربية'},
+  invalid:'Please fill in your name, a valid email and a message.',pending:'The form is waiting for activation. Please try again later, or email me directly.',fail:'Sorry, the message could not be sent. Please email me directly at ',langLabel:'عرض الموقع بالعربية'},
  ar:{words:['أتمتة بالذكاء الاصطناعي','سير عمل ذكي','تطبيقات ويب مخصصة','وكلاء ذكاء اصطناعي'],h:' ساعة',mo:' شهريًا',
   be:(d,be)=>be>12?'أكثر من 12 شهرًا':d<14?(Math.round(d)<=1?'يوم واحد':Math.round(d)+' أيام'):be<2?Math.round(d/7)+' أسابيع':be.toFixed(1)+' أشهر',
   cap:(ahead,v)=>`الصافي بعد كلفة الإعداد، شهرًا بشهر. في الشهر 12 تكون ${ahead?'رابحًا بمقدار '+v:'خاسرًا بمقدار '+v}.`,
   start:'البداية',mon:m=>'شهر '+m,book:'احجز مكالمة مجانية',wa:'واتساب',li:'لينكدإن',gh:'GitHub',email:'البريد الإلكتروني',copy:'انسخ البريد',copied:'تم النسخ',
   waText:'مرحبًا محمد، أودّ التحدث عن أتمتة.',langBtn:'English',
   send:'أرسل الرسالة',sending:'جارٍ الإرسال…',sent:'شكرًا! تم إرسال رسالتك، وسأعود إليك قريبًا.',
-  invalid:'يرجى إدخال اسمك وبريد إلكتروني صحيح ورسالتك.',fail:'عذرًا، تعذّر إرسال الرسالة. يرجى مراسلتي مباشرة على ',langLabel:'View the site in English'}
+  invalid:'يرجى إدخال اسمك وبريد إلكتروني صحيح ورسالتك.',pending:'النموذج بانتظار التفعيل. يرجى المحاولة لاحقًا أو مراسلتي مباشرة بالبريد.',fail:'عذرًا، تعذّر إرسال الرسالة. يرجى مراسلتي مباشرة على ',langLabel:'View the site in English'}
 };
 const T=k=>S[lang][k];
 
@@ -217,10 +217,13 @@ document.querySelectorAll('.case').forEach(c=>{
    const r=await fetch('https://formsubmit.co/ajax/'+MAIL_TO,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
     body:JSON.stringify({name,email,message:msg,_subject:'New enquiry from MJ Automations website: '+name,_template:'table',_captcha:'false'})});
    const d=await r.json().catch(()=>({}));
-   if(!r.ok||String(d.success)!=='true')throw new Error(d.message||r.status);
+   if(!r.ok||String(d.success)!=='true')throw new Error(d.message||('HTTP '+r.status));
    say('ok',T('sent'));f.reset();
   }catch(err){
-   say('err',T('fail')+'<a href="mailto:'+MAIL_TO+'" dir="ltr">'+MAIL_TO+'</a>');
+   const why=String(err&&err.message||err);console.error('Contact form:',why);
+   const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+   if(/activat/i.test(why))say('err',T('pending'));
+   else say('err',T('fail')+'<a href="mailto:'+MAIL_TO+'" dir="ltr">'+MAIL_TO+'</a><br><small dir="ltr">'+esc(why).slice(0,200)+'</small>');
   }finally{send.disabled=false;send.textContent=T('send')}
  });
 })();
