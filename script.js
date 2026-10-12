@@ -17,14 +17,16 @@ const S={
   start:'start',mon:m=>'mo '+m,book:'Book a free call',wa:'WhatsApp',li:'LinkedIn',gh:'GitHub',email:'Email',copy:'Copy email',copied:'Copied',
   waText:'Hi Mohammad, I would like to talk about an automation.',langBtn:'عربي',
   send:'Send message',sending:'Sending…',sent:'Thanks! Your message was sent. I will get back to you soon.',
-  invalid:'Please fill in your name, a valid email and a message.',pending:'The form is waiting for activation. Please try again later, or email me directly.',fail:'Sorry, the message could not be sent. Please email me directly at ',langLabel:'عرض الموقع بالعربية'},
+  invalid:'Please fill in your name, a valid email and a message.',pending:'The form is waiting for activation. Please try again later, or email me directly.',
+  doneTitle:n=>`Thanks${n?', '+n:''}! Your message was sent.`,doneText:e=>`I received your message and will reply to ${e} as soon as possible, usually within 1–2 business days.`,again:'Send another message',fail:'Sorry, the message could not be sent. Please email me directly at ',langLabel:'عرض الموقع بالعربية'},
  ar:{words:['أتمتة بالذكاء الاصطناعي','سير عمل ذكي','تطبيقات ويب مخصصة','وكلاء ذكاء اصطناعي'],h:' ساعة',mo:' شهريًا',
   be:(d,be)=>be>12?'أكثر من 12 شهرًا':d<14?(Math.round(d)<=1?'يوم واحد':Math.round(d)+' أيام'):be<2?Math.round(d/7)+' أسابيع':be.toFixed(1)+' أشهر',
   cap:(ahead,v)=>`الصافي بعد كلفة الإعداد، شهرًا بشهر. في الشهر 12 تكون ${ahead?'رابحًا بمقدار '+v:'خاسرًا بمقدار '+v}.`,
   start:'البداية',mon:m=>'شهر '+m,book:'احجز مكالمة مجانية',wa:'واتساب',li:'لينكدإن',gh:'GitHub',email:'البريد الإلكتروني',copy:'انسخ البريد',copied:'تم النسخ',
   waText:'مرحبًا محمد، أودّ التحدث عن أتمتة.',langBtn:'English',
   send:'أرسل الرسالة',sending:'جارٍ الإرسال…',sent:'شكرًا! تم إرسال رسالتك، وسأعود إليك قريبًا.',
-  invalid:'يرجى إدخال اسمك وبريد إلكتروني صحيح ورسالتك.',pending:'النموذج بانتظار التفعيل. يرجى المحاولة لاحقًا أو مراسلتي مباشرة بالبريد.',fail:'عذرًا، تعذّر إرسال الرسالة. يرجى مراسلتي مباشرة على ',langLabel:'View the site in English'}
+  invalid:'يرجى إدخال اسمك وبريد إلكتروني صحيح ورسالتك.',pending:'النموذج بانتظار التفعيل. يرجى المحاولة لاحقًا أو مراسلتي مباشرة بالبريد.',
+  doneTitle:n=>`شكرًا${n?' '+n:''}! تم إرسال رسالتك.`,doneText:e=>`وصلتني رسالتك وسأرد عليك على ${e} في أقرب وقت، عادةً خلال يوم إلى يومي عمل.`,again:'إرسال رسالة أخرى',fail:'عذرًا، تعذّر إرسال الرسالة. يرجى مراسلتي مباشرة على ',langLabel:'View the site in English'}
 };
 const T=k=>S[lang][k];
 
@@ -205,20 +207,29 @@ document.querySelectorAll('.case').forEach(c=>{
  const send=document.getElementById('f-send'),st=document.getElementById('f-status');
  const setBtn=()=>{if(!send.disabled)send.textContent=T('send')};setBtn();hooks.push(setBtn);
  const say=(cls,html)=>{st.className='fstatus '+cls;st.innerHTML=html};
+ const done=document.getElementById('f-done'),again=document.getElementById('f-again');let last=null;
+ const fillDone=()=>{if(!last)return;const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('f-done-title').textContent=T('doneTitle')(last.name);
+  document.getElementById('f-done-text').innerHTML=T('doneText')('<b dir="ltr">'+esc(last.email)+'</b>');
+  again.textContent=T('again')};
+ const showDone=(name,email)=>{last={name:name.split(' ')[0],email};fillDone();f.hidden=true;done.hidden=false;
+  done.scrollIntoView({block:'center',behavior:still?'auto':'smooth'});done.focus({preventScroll:true})};
+ hooks.push(fillDone);
+ again.addEventListener('click',()=>{done.hidden=true;f.hidden=false;last=null;f.elements.name.focus()});
  f.addEventListener('submit',async e=>{
   e.preventDefault();
   const el=f.elements,name=el.name.value.trim(),email=el.email.value.trim(),msg=el.message.value.trim();
   const bad=[[el.name,!name],[el.email,!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)],[el.message,!msg]];
   bad.forEach(([el,b])=>el.setAttribute('aria-invalid',b));
   if(bad.some(([,b])=>b)){say('err',T('invalid'));bad.find(([,b])=>b)[0].focus();return}
-  if(el._honey.value){say('ok',T('sent'));f.reset();return}
+  if(el._honey.value){showDone(name,email);f.reset();return}
   send.disabled=true;send.textContent=T('sending');say('','');
   try{
    const r=await fetch('https://formsubmit.co/ajax/'+MAIL_TO,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
     body:JSON.stringify({name,email,message:msg,_subject:'New enquiry from MJ Automations website: '+name,_template:'table',_captcha:'false'})});
    const d=await r.json().catch(()=>({}));
    if(!r.ok||String(d.success)!=='true')throw new Error(d.message||('HTTP '+r.status));
-   say('ok',T('sent'));f.reset();
+   showDone(name,email);f.reset();say('','');
   }catch(err){
    const why=String(err&&err.message||err);console.error('Contact form:',why);
    const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

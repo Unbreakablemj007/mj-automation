@@ -391,6 +391,12 @@
       <button class="btn fsend" id="f-send" type="submit" data-dyn>Send message</button>
       <p class="fstatus" id="f-status" role="status" aria-live="polite" data-dyn></p>
     </form>
+    <div class="fdone" id="f-done" hidden tabindex="-1" role="status" aria-live="polite">
+      <div class="fdone-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg></div>
+      <h3 id="f-done-title" data-dyn></h3>
+      <p id="f-done-text" data-dyn></p>
+      <button class="btn btn-ghost" id="f-again" type="button" data-dyn></button>
+    </div>
     <div class="contact-actions" id="contact-links"></div>
   </div>
 </section>
