@@ -64,7 +64,7 @@ function translatePage(){
   if(!origAttr.has(el))origAttr.set(el,el.getAttribute('aria-label'));
   const o=origAttr.get(el);el.setAttribute('aria-label',lang==='ar'&&AR[norm(o)]?AR[norm(o)]:o)});
 }
-const titles={en:document.title,ar:'MJ Automation | محمد جعفر – أخصائي أتمتة بالذكاء الاصطناعي'};
+const titles={en:document.title,ar:'MJ Automations | محمد جعفر – أخصائي أتمتة بالذكاء الاصطناعي'};
 const hooks=[];
 function setLang(l,save){
  lang=l;const root=document.documentElement;
@@ -215,7 +215,7 @@ document.querySelectorAll('.case').forEach(c=>{
   send.disabled=true;send.textContent=T('sending');say('','');
   try{
    const r=await fetch('https://formsubmit.co/ajax/'+MAIL_TO,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},
-    body:JSON.stringify({name,email,message:msg,_subject:'New enquiry from MJ Automation website: '+name,_template:'table',_captcha:'false'})});
+    body:JSON.stringify({name,email,message:msg,_subject:'New enquiry from MJ Automations website: '+name,_template:'table',_captcha:'false'})});
    const d=await r.json().catch(()=>({}));
    if(!r.ok||String(d.success)!=='true')throw new Error(d.message||r.status);
    say('ok',T('sent'));f.reset();

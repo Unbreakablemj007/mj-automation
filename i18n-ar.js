@@ -161,7 +161,7 @@ window.I18N_AR={
 "Tell me what's slowing you down and I'll tell you how to fix it.":"أخبرني ما الذي يبطئ عملك، وسأخبرك كيف نعالجه.",
 "Email me":"راسلني بالبريد",
 "AI automations, workflows and websites. Working with clients worldwide, in English and Arabic.":"أتمتة بالذكاء الاصطناعي وسير عمل ومواقع إلكترونية. أعمل مع عملاء حول العالم، بالعربية والإنجليزية.",
-"MJ Automation · Mohammad Jaafar":"MJ Automation · محمد جعفر",
+"MJ Automations · Mohammad Jaafar":"MJ Automations · محمد جعفر",
 "Back to top ↑":"العودة للأعلى ↑",
 "Menu":"القائمة",
 "Animated diagram of an automated workflow: a trigger feeds an AI step, which updates email, CRM and spreadsheet":"رسم متحرك لسير عمل مؤتمت: مُشغّل يغذّي خطوة ذكاء اصطناعي تحدّث البريد ونظام العملاء والجدول",

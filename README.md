@@ -1,4 +1,4 @@
-# MJ Automation
+# MJ Automations
 
 Website of **Mohammad Jaafar**, AI Automation Specialist, in English and Arabic.
 
