@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mj-automation-pi.vercel.app/sitemap.xml
+Sitemap: https://mj-automations.vercel.app/sitemap.xml
