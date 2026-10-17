@@ -247,7 +247,7 @@ const FILM=(function(){
  const sec=document.getElementById('film');if(!sec)return null;
  const $=id=>document.getElementById(id),stage=sec.querySelector('.film-stage'),world=$('world'),svg=$('wires');
  const NS='http://www.w3.org/2000/svg',cl=v=>Math.max(0,Math.min(1,v)),ease=v=>v<.5?4*v*v*v:1-Math.pow(-2*v+2,3)/2,eo=v=>1-Math.pow(1-v,3);
- const seg=(p,a,b)=>cl((p-a)/(b-a));
+ const seg=(p,a,b)=>cl((p-a)/(b-a)),E=k=>S.en[k];   // the film layer stays in English in both languages
  const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
  const cards={phone:$('w-phone'),ai:$('w-ai'),crm:$('w-crm'),cal:$('w-cal'),mail:$('w-mail')};
  let W=0,H=0,paths=[],lens=[],focus0={x:0,y:0},cur=0,target=0,raf=0;
@@ -314,14 +314,13 @@ const FILM=(function(){
   cards.phone.classList.toggle('live',p<.16||(p>.74&&p<.86));
   cards.ai.classList.toggle('live',p>.26&&p<.56);
   show($('chip1'),seg(p,.28,.31));show($('chip2'),seg(p,.31,.34));
-  $('type-en').style.clipPath=`inset(0 ${(100-100*seg(p,.33,.42)).toFixed(1)}% 0 0)`;
-  $('type-ar').style.clipPath=`inset(0 0 0 ${(100-100*seg(p,.41,.5)).toFixed(1)}%)`;
-  $('ai-state').textContent=T(p<.28?'aiRead':p<.5?'aiWrite':'aiDone');
+  $('type-en').style.clipPath=`inset(0 ${(100-100*seg(p,.33,.48)).toFixed(1)}% 0 0)`;
+  $('ai-state').textContent=E(p<.28?'aiRead':p<.5?'aiWrite':'aiDone');
   // 2 AI → CRM, calendar, inbox
   [1,2,3].forEach((i,n)=>{wire(i,.5+n*.02,.58+n*.02,p);signal(i,$('sig'+i),.52+n*.025,.61+n*.025,p)});
-  show($('crm-row'),seg(p,.6,.64),8);const crmOk=p>.66;$('crm-tag').textContent=T(crmOk?'booked':'newLead');$('crm-tag').classList.toggle('ok',crmOk);
+  show($('crm-row'),seg(p,.6,.64),8);const crmOk=p>.66;$('crm-tag').textContent=E(crmOk?'booked':'newLead');$('crm-tag').classList.toggle('ok',crmOk);
   const slot=seg(p,.63,.67);$('cal-slot').style.background=`rgba(56,225,192,${(slot*.9).toFixed(3)})`;$('cal-slot').firstElementChild.style.opacity=slot;
-  $('mail-line').textContent=T(p>.68?'mailSent':'mailWait');$('mail-line').style.color=p>.68?'var(--acc)':'';
+  $('mail-line').textContent=E(p>.68?'mailSent':'mailWait');$('mail-line').style.color=p>.68?'var(--acc)':'';
   pop($('ok-crm'),seg(p,.64,.67));pop($('ok-cal'),seg(p,.66,.69));pop($('ok-mail'),seg(p,.68,.71));
   [cards.crm,cards.cal,cards.mail].forEach((c,n)=>c.classList.toggle('live',p>.61+n*.025&&p<.8));
   // 3 reply back to the phone

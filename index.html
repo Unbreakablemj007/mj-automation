@@ -65,10 +65,10 @@
 </header>
 
 <main>
-<section class="film" id="film" aria-label="How an automated workflow answers a customer: a late-night message is read by AI, a reply is written in English and Arabic, and the CRM, calendar and inbox update">
+<section class="film" id="film" aria-label="How an automated workflow answers a customer: a late-night message is read by AI, a reply is written, and the CRM, calendar and inbox update">
   <div class="film-stage">
     <div class="film-bg" aria-hidden="true"></div>
-    <div class="world" id="world" aria-hidden="true">
+    <div class="world" id="world" aria-hidden="true" data-dyn lang="en">
       <svg class="wires" id="wires"></svg>
       <div class="w-card w-phone" id="w-phone">
         <div class="ph-notch"></div>
@@ -83,11 +83,10 @@
       </div>
       <div class="w-card w-ai" id="w-ai">
         <div class="ai-head"><span class="ai-ico"><svg viewBox="0 0 24 24"><use href="#i-spark"/></svg></span><div><b data-dyn>Claude AI</b><small id="ai-state" data-dyn>Reading the message</small></div></div>
-        <div class="ai-chips"><span class="chip" id="chip1">Booking request</span><span class="chip" id="chip2">Language detected</span></div>
+        <div class="ai-chips"><span class="chip" id="chip1">Booking request</span><span class="chip" id="chip2">Details captured</span></div>
         <div class="ai-draft">
           <small>Reply draft</small>
           <p class="type-line" id="type-en" dir="ltr" data-dyn>Hi Sara! Yes, Thursday at 10:00 is free. I've booked it for you.</p>
-          <p class="type-line ar" id="type-ar" dir="rtl" lang="ar" data-dyn>أهلاً سارة! نعم، الخميس الساعة 10:00 متاح، وقد حجزته لك.</p>
         </div>
       </div>
       <div class="w-card w-out" id="w-crm">
@@ -111,7 +110,7 @@
         <p class="beat-big">11:47 pm.<br><span class="grad">A customer is ready to book.</span></p>
         <p class="beat-sub">Most businesses reply tomorrow. Yours can reply now.</p>
       </div>
-      <div class="beat b1" data-in="0.22" data-peak="0.31" data-out="0.45"><p class="beat-big">Every enquiry answered,<br><span class="grad">in Arabic or English.</span></p></div>
+      <div class="beat b1" data-in="0.22" data-peak="0.31" data-out="0.45"><p class="beat-big">Every enquiry answered<br><span class="grad">in seconds, day or night.</span></p></div>
       <div class="beat b2" data-in="0.52" data-peak="0.6" data-out="0.76"><p class="beat-big">Your CRM, calendar and inbox<br><span class="grad">keep up by themselves.</span></p></div>
       <div class="beat bf" data-in="0.86" data-peak="0.95" data-out="2">
         <p class="eyebrow mono">MJ Automations · Mohammad Jaafar</p>
