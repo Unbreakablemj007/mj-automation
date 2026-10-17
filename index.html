@@ -65,60 +65,40 @@
 </header>
 
 <main>
-<section class="film" id="film" aria-label="How an automated workflow answers a customer: a late-night message is read by AI, a reply is written, and the CRM, calendar and inbox update">
+<section class="film" id="film" aria-label="From a desk buried in paperwork to a calm live dashboard: invoices, notes and reports are captured and synced automatically">
   <div class="film-stage">
     <div class="film-bg" aria-hidden="true"></div>
-    <div class="world" id="world" aria-hidden="true" data-dyn lang="en">
-      <svg class="wires" id="wires"></svg>
-      <div class="w-card w-phone" id="w-phone">
-        <div class="ph-notch"></div>
-        <div class="ph-status mono" data-dyn>11:47</div>
-        <div class="ph-head"><span class="ph-av">S</span><div><b data-dyn>Sara K.</b><small>Website chat</small></div></div>
-        <div class="ph-body">
-          <p class="bub in" id="msg-in" dir="auto">Hi, do you have any availability this week?</p>
-          <p class="ph-typing" id="ph-typing"><i></i><i></i><i></i></p>
-          <p class="bub out" id="msg-out" dir="auto">Hi Sara! Yes, Thursday at 10:00 is free. I've booked it for you.</p>
-          <p class="ph-stamp mono" id="ph-stamp">Replied · 11:47 ✓✓</p>
-        </div>
+    <div class="desk-wrap" aria-hidden="true" data-dyn lang="en"><div class="desk" id="desk"><div class="desk-lamp"></div></div></div>
+    <div class="dash" id="dash" aria-hidden="true" data-dyn lang="en">
+      <div class="dash-head"><span class="dash-dot"></span><b>Business pulse</b><span class="dash-live mono">LIVE</span></div>
+      <div class="dash-tiles">
+        <div class="tile" id="t0"><small>Invoices</small><b>Synced</b><i>✓</i></div>
+        <div class="tile" id="t1"><small>Follow-ups</small><b>Sent</b><i>✓</i></div>
+        <div class="tile" id="t2"><small>Reports</small><b>Delivered</b><i>✓</i></div>
+        <div class="tile" id="t3"><small>New leads</small><b>Logged</b><i>✓</i></div>
       </div>
-      <div class="w-card w-ai" id="w-ai">
-        <div class="ai-head"><span class="ai-ico"><svg viewBox="0 0 24 24"><use href="#i-spark"/></svg></span><div><b data-dyn>Claude AI</b><small id="ai-state" data-dyn>Reading the message</small></div></div>
-        <div class="ai-chips"><span class="chip" id="chip1">Booking request</span><span class="chip" id="chip2">Details captured</span></div>
-        <div class="ai-draft">
-          <small>Reply draft</small>
-          <p class="type-line" id="type-en" dir="ltr" data-dyn>Hi Sara! Yes, Thursday at 10:00 is free. I've booked it for you.</p>
-        </div>
-      </div>
-      <div class="w-card w-out" id="w-crm">
-        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg><b>CRM</b><span class="out-ok" id="ok-crm">✓</span></div>
-        <div class="crm-row" id="crm-row"><span data-dyn>Sara K.</span><span>Website chat</span><span class="tagx" id="crm-tag" data-dyn>New lead</span></div>
-      </div>
-      <div class="w-card w-out" id="w-cal">
-        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><b>Calendar</b><span class="out-ok" id="ok-cal">✓</span></div>
-        <div class="cal-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="slot" id="cal-slot"><b class="mono" data-dyn>10:00</b></i><i></i><i></i></div>
-      </div>
-      <div class="w-card w-out" id="w-mail">
-        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-mail"/></svg><b>Inbox</b><span class="out-ok" id="ok-mail">✓</span></div>
-        <p class="mail-line" id="mail-line" data-dyn>Confirmation sent</p>
-      </div>
-      <span class="sig" id="sig0"></span><span class="sig" id="sig1"></span><span class="sig" id="sig2"></span><span class="sig" id="sig3"></span><span class="sig" id="sig4"></span>
+      <div class="dash-chart"><svg viewBox="0 0 600 140" preserveAspectRatio="none"><defs><linearGradient id="pulseFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38e1c0" stop-opacity=".35"/><stop offset="1" stop-color="#38e1c0" stop-opacity="0"/></linearGradient><linearGradient id="pulseLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient></defs>
+        <path class="grid" d="M0 35H600M0 70H600M0 105H600"/>
+        <path id="pulse-area" class="area" d="M0 118 C60 116 90 110 130 104 S210 96 250 88 S320 92 350 72 S420 58 460 50 S540 30 600 22 V140 H0Z"/>
+        <path id="pulse-line" class="line" pathLength="1" d="M0 118 C60 116 90 110 130 104 S210 96 250 88 S320 92 350 72 S420 58 460 50 S540 30 600 22"/>
+        <circle id="pulse-dot" r="5" cx="600" cy="22"/></svg></div>
     </div>
     <div class="film-scrim" aria-hidden="true"></div>
     <div class="beats">
-      <div class="beat b0" data-in="-0.1" data-peak="0" data-out="0.17">
+      <div class="beat b0" data-in="-0.1" data-peak="0" data-out="0.16">
         <p class="eyebrow mono">AI Automation Specialist</p>
-        <p class="beat-big">11:47 pm.<br><span class="grad">A customer is ready to book.</span></p>
-        <p class="beat-sub">Most businesses reply tomorrow. Yours can reply now.</p>
+        <p class="beat-big">Still running your business<br><span class="grad">by hand?</span></p>
+        <p class="beat-sub">Invoices, follow-ups and reports pile up every night.</p>
       </div>
-      <div class="beat b1" data-in="0.22" data-peak="0.31" data-out="0.45"><p class="beat-big">Every enquiry answered<br><span class="grad">in seconds, day or night.</span></p></div>
-      <div class="beat b2" data-in="0.52" data-peak="0.6" data-out="0.76"><p class="beat-big">Your CRM, calendar and inbox<br><span class="grad">keep up by themselves.</span></p></div>
+      <div class="beat b1" data-in="0.2" data-peak="0.3" data-out="0.44"><p class="beat-big">Every invoice, email and note,<br><span class="grad">captured and sorted.</span></p></div>
+      <div class="beat b2" data-in="0.5" data-peak="0.6" data-out="0.76"><p class="beat-big">Your numbers,<br><span class="grad">always up to date.</span></p></div>
       <div class="beat bf" data-in="0.86" data-peak="0.95" data-out="2">
         <p class="eyebrow mono">MJ Automations · Mohammad Jaafar</p>
         <h1>I automate the work <span class="grad">so your business runs itself.</span></h1>
         <p class="lead">I build <span class="type mono" id="type" aria-live="off">AI automations</span><span class="caret" aria-hidden="true"></span> that save hours every week and remove repetitive manual work.</p>
         <div class="cta">
           <a class="btn" href="#contact">Start a project</a>
-          <a class="btn btn-ghost" href="#services">What I do</a>
+          <a class="btn btn-ghost" href="#roi">See what it's worth</a>
         </div>
         <ul class="values">
           <li>Workflows that run 24/7</li>
