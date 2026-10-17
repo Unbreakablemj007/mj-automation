@@ -38,6 +38,7 @@
 <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="#9fb4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
 <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="#9fb4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c2 .6 3.2 2.3 3.5 5"/></symbol>
 <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="#9fb4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="#9fb4ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
 <symbol id="i-flow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="15" width="6" height="6" rx="1.5"/><path d="M9 6h4a2 2 0 0 1 2 2v7"/></symbol>
 <symbol id="i-web" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></symbol>
 <symbol id="i-bot" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13v1.5M15 13v1.5"/><circle cx="12" cy="3.5" r="1"/></symbol>
@@ -64,59 +65,71 @@
 </header>
 
 <main>
-<section class="hero">
-  <canvas id="net" aria-hidden="true"></canvas>
-  <div class="wrap hero-in">
-    <div class="hero-copy">
-      <p class="eyebrow mono">AI Automation Specialist</p>
-      <h1>I automate the work <span class="grad">so your business runs itself.</span></h1>
-      <p class="lead">I'm Mohammad Jaafar. I build <span class="type mono" id="type" aria-live="off" data-dyn>AI automations</span><span class="caret" aria-hidden="true"></span> that save hours every week and remove repetitive manual work.</p>
-      <div class="cta">
-        <a class="btn" href="#contact">Start a project</a>
-        <a class="btn btn-ghost" href="#services">What I do</a>
+<section class="film" id="film" aria-label="How an automated workflow answers a customer: a late-night message is read by AI, a reply is written in English and Arabic, and the CRM, calendar and inbox update">
+  <div class="film-stage">
+    <div class="film-bg" aria-hidden="true"></div>
+    <div class="world" id="world" aria-hidden="true">
+      <svg class="wires" id="wires"></svg>
+      <div class="w-card w-phone" id="w-phone">
+        <div class="ph-notch"></div>
+        <div class="ph-status mono" data-dyn>11:47</div>
+        <div class="ph-head"><span class="ph-av">S</span><div><b data-dyn>Sara K.</b><small>Website chat</small></div></div>
+        <div class="ph-body">
+          <p class="bub in" id="msg-in" dir="auto">Hi, do you have any availability this week?</p>
+          <p class="ph-typing" id="ph-typing"><i></i><i></i><i></i></p>
+          <p class="bub out" id="msg-out" dir="auto">Hi Sara! Yes, Thursday at 10:00 is free. I've booked it for you.</p>
+          <p class="ph-stamp mono" id="ph-stamp">Replied · 11:47 ✓✓</p>
+        </div>
+      </div>
+      <div class="w-card w-ai" id="w-ai">
+        <div class="ai-head"><span class="ai-ico"><svg viewBox="0 0 24 24"><use href="#i-spark"/></svg></span><div><b data-dyn>Claude AI</b><small id="ai-state" data-dyn>Reading the message</small></div></div>
+        <div class="ai-chips"><span class="chip" id="chip1">Booking request</span><span class="chip" id="chip2">Language detected</span></div>
+        <div class="ai-draft">
+          <small>Reply draft</small>
+          <p class="type-line" id="type-en" dir="ltr" data-dyn>Hi Sara! Yes, Thursday at 10:00 is free. I've booked it for you.</p>
+          <p class="type-line ar" id="type-ar" dir="rtl" lang="ar" data-dyn>أهلاً سارة! نعم، الخميس الساعة 10:00 متاح، وقد حجزته لك.</p>
+        </div>
+      </div>
+      <div class="w-card w-out" id="w-crm">
+        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-users"/></svg><b>CRM</b><span class="out-ok" id="ok-crm">✓</span></div>
+        <div class="crm-row" id="crm-row"><span data-dyn>Sara K.</span><span>Website chat</span><span class="tagx" id="crm-tag" data-dyn>New lead</span></div>
+      </div>
+      <div class="w-card w-out" id="w-cal">
+        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg><b>Calendar</b><span class="out-ok" id="ok-cal">✓</span></div>
+        <div class="cal-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="slot" id="cal-slot"><b class="mono" data-dyn>10:00</b></i><i></i><i></i></div>
+      </div>
+      <div class="w-card w-out" id="w-mail">
+        <div class="out-head"><svg viewBox="0 0 24 24"><use href="#i-mail"/></svg><b>Inbox</b><span class="out-ok" id="ok-mail">✓</span></div>
+        <p class="mail-line" id="mail-line" data-dyn>Confirmation sent</p>
+      </div>
+      <span class="sig" id="sig0"></span><span class="sig" id="sig1"></span><span class="sig" id="sig2"></span><span class="sig" id="sig3"></span><span class="sig" id="sig4"></span>
+    </div>
+    <div class="film-scrim" aria-hidden="true"></div>
+    <div class="beats">
+      <div class="beat b0" data-in="-0.1" data-peak="0" data-out="0.17">
+        <p class="eyebrow mono">AI Automation Specialist</p>
+        <p class="beat-big">11:47 pm.<br><span class="grad">A customer is ready to book.</span></p>
+        <p class="beat-sub">Most businesses reply tomorrow. Yours can reply now.</p>
+      </div>
+      <div class="beat b1" data-in="0.22" data-peak="0.31" data-out="0.45"><p class="beat-big">Every enquiry answered,<br><span class="grad">in Arabic or English.</span></p></div>
+      <div class="beat b2" data-in="0.52" data-peak="0.6" data-out="0.76"><p class="beat-big">Your CRM, calendar and inbox<br><span class="grad">keep up by themselves.</span></p></div>
+      <div class="beat bf" data-in="0.86" data-peak="0.95" data-out="2">
+        <p class="eyebrow mono">MJ Automations · Mohammad Jaafar</p>
+        <h1>I automate the work <span class="grad">so your business runs itself.</span></h1>
+        <p class="lead">I build <span class="type mono" id="type" aria-live="off">AI automations</span><span class="caret" aria-hidden="true"></span> that save hours every week and remove repetitive manual work.</p>
+        <div class="cta">
+          <a class="btn" href="#contact">Start a project</a>
+          <a class="btn btn-ghost" href="#services">What I do</a>
+        </div>
+        <ul class="values">
+          <li>Workflows that run 24/7</li>
+          <li>Built around your process</li>
+          <li>You own everything I build</li>
+        </ul>
       </div>
     </div>
-    <figure class="flow" aria-label="Animated diagram of an automated workflow: a trigger feeds an AI step, which updates email, CRM and spreadsheet">
-      <svg viewBox="8 26 464 328" role="img" aria-hidden="true">
-        <defs>
-          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient>
-          <linearGradient id="gw" gradientUnits="userSpaceOnUse" x1="104" y1="0" x2="376" y2="0"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient>
-          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <g class="wires" fill="none" stroke="url(#gw)" stroke-width="2" stroke-linecap="round">
-          <path id="w0" d="M104 190 H176"/>
-          <path id="w1" d="M304 190 C340 190 340 78 376 78"/>
-          <path id="w2" d="M304 190 H376"/>
-          <path id="w3" d="M304 190 C340 190 340 302 376 302"/>
-        </g>
-        <g fill="#38e1c0" filter="url(#glow)">
-          <circle r="4"><animateMotion dur="2.4s" repeatCount="indefinite"><mpath href="#w0"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.4s" begin="1.2s" repeatCount="indefinite"><mpath href="#w0"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.8s" begin="0.6s" repeatCount="indefinite"><mpath href="#w1"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.8s" begin="1.0s" repeatCount="indefinite"><mpath href="#w2"/></animateMotion></circle>
-          <circle r="4"><animateMotion dur="2.8s" begin="1.4s" repeatCount="indefinite"><mpath href="#w3"/></animateMotion></circle>
-        </g>
-        <g class="node n-in" transform="translate(16 150)"><rect width="88" height="80" rx="16"/><use href="#i-bolt" x="32" y="14" width="24" height="24"/><text x="44" y="62" text-anchor="middle">Trigger</text></g>
-        <g class="node n-ai" transform="translate(176 130)"><rect class="pulse" width="128" height="120" rx="22"/><use href="#i-spark" x="48" y="22" width="32" height="32"/><text x="64" y="80" text-anchor="middle">Claude AI</text><text x="64" y="98" text-anchor="middle" class="sub">decide + draft</text></g>
-        <g class="node" transform="translate(376 38)"><rect width="88" height="80" rx="16"/><use href="#i-mail" x="32" y="14" width="24" height="24"/><text x="44" y="62" text-anchor="middle">Email</text><g class="ok ok1" transform="translate(78 -8)"><circle r="11"/><path d="M-5 0l3.5 3.5L5-3.5"/></g></g>
-        <g class="node" transform="translate(376 150)"><rect width="88" height="80" rx="16"/><use href="#i-users" x="32" y="14" width="24" height="24"/><text x="44" y="62" text-anchor="middle">CRM</text><g class="ok ok2" transform="translate(78 -8)"><circle r="11"/><path d="M-5 0l3.5 3.5L5-3.5"/></g></g>
-        <g class="node" transform="translate(376 262)"><rect width="88" height="80" rx="16"/><use href="#i-table" x="32" y="14" width="24" height="24"/><text x="44" y="62" text-anchor="middle">Sheets</text><g class="ok ok3" transform="translate(78 -8)"><circle r="11"/><path d="M-5 0l3.5 3.5L5-3.5"/></g></g>
-      </svg>
-      <ol class="steps-mini" aria-label="What the workflow does">
-        <li><span class="mono">1</span>New lead arrives</li>
-        <li><span class="mono">2</span>AI scores and drafts a reply</li>
-        <li><span class="mono">3</span>Email, CRM and sheet update</li>
-      </ol>
-      <figcaption class="mono">live workflow · runs 24/7</figcaption>
-    </figure>
-  </div>
-  <div class="wrap">
-    <ul class="values">
-      <li>Workflows that run 24/7</li>
-      <li>Built around your process</li>
-      <li>You own everything I build</li>
-    </ul>
-    <a class="scroll mono" href="#services" aria-label="Scroll to services"><span>scroll</span><i></i></a>
+    <div class="film-hint mono" id="film-hint" aria-hidden="true"><span>scroll</span><i></i></div>
+    <div class="film-fade" id="film-fade" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -354,7 +367,7 @@
       <p>My approach is simple: understand the process first, automate what matters, and deliver something you can actually trust and understand.</p>
     </div>
     <div class="side">
-      <figure class="avatar" aria-label="MJ monogram, placeholder for a portrait photo">
+      <figure class="avatar" aria-label="MJ Automations monogram">
         <svg viewBox="0 0 200 200" aria-hidden="true">
           <defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient></defs>
           <circle class="ring r1" cx="100" cy="100" r="92" fill="none" stroke="url(#g2)" stroke-width="2" stroke-dasharray="6 10"/>
@@ -416,6 +429,7 @@
   </div>
   <div class="wrap foot-bottom"><span>© <span id="yr" data-dyn>2026</span> MJ Automations · Mohammad Jaafar</span><a href="#top">Back to top ↑</a></div>
 </footer>
+<script src="vendor/lenis.min.js"></script>
 <script src="i18n-ar.js"></script>
 <script src="script.js"></script>
 </body>

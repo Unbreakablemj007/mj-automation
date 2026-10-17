@@ -16,7 +16,7 @@ const S={
   cap:(ahead,v)=>`Net after setup, month by month. By month 12 you are ${ahead?'ahead by '+v:'behind by '+v}.`,
   start:'start',mon:m=>'mo '+m,book:'Book a free call',wa:'WhatsApp',li:'LinkedIn',gh:'GitHub',email:'Email',copy:'Copy email',copied:'Copied',
   waText:'Hi Mohammad, I would like to talk about an automation.',langBtn:'عربي',
-  send:'Send message',sending:'Sending…',sent:'Thanks! Your message was sent. I will get back to you soon.',
+  send:'Send message',aiRead:'Reading the message',aiWrite:'Writing the reply',aiDone:'Reply ready ✓',newLead:'New lead',booked:'Booked ✓',mailWait:'Preparing confirmation',mailSent:'Confirmation sent ✓',sending:'Sending…',sent:'Thanks! Your message was sent. I will get back to you soon.',
   invalid:'Please fill in your name, a valid email and a message.',pending:'The form is waiting for activation. Please try again later, or email me directly.',
   doneTitle:n=>`Thanks${n?', '+n:''}! Your message was sent.`,doneText:e=>`I received your message and will reply to ${e} as soon as possible, usually within 1–2 business days.`,again:'Send another message',fail:'Sorry, the message could not be sent. Please email me directly at ',langLabel:'عرض الموقع بالعربية'},
  ar:{words:['أتمتة بالذكاء الاصطناعي','سير عمل ذكي','تطبيقات ويب مخصصة','وكلاء ذكاء اصطناعي'],h:' ساعة',mo:' شهريًا',
@@ -24,7 +24,7 @@ const S={
   cap:(ahead,v)=>`الصافي بعد كلفة الإعداد، شهرًا بشهر. في الشهر 12 تكون ${ahead?'رابحًا بمقدار '+v:'خاسرًا بمقدار '+v}.`,
   start:'البداية',mon:m=>'شهر '+m,book:'احجز مكالمة مجانية',wa:'واتساب',li:'لينكدإن',gh:'GitHub',email:'البريد الإلكتروني',copy:'انسخ البريد',copied:'تم النسخ',
   waText:'مرحبًا محمد، أودّ التحدث عن أتمتة.',langBtn:'English',
-  send:'أرسل الرسالة',sending:'جارٍ الإرسال…',sent:'شكرًا! تم إرسال رسالتك، وسأعود إليك قريبًا.',
+  send:'أرسل الرسالة',aiRead:'يقرأ الرسالة',aiWrite:'يكتب الرد',aiDone:'الرد جاهز ✓',newLead:'عميل جديد',booked:'تم الحجز ✓',mailWait:'يجهّز التأكيد',mailSent:'تم إرسال التأكيد ✓',sending:'جارٍ الإرسال…',sent:'شكرًا! تم إرسال رسالتك، وسأعود إليك قريبًا.',
   invalid:'يرجى إدخال اسمك وبريد إلكتروني صحيح ورسالتك.',pending:'النموذج بانتظار التفعيل. يرجى المحاولة لاحقًا أو مراسلتي مباشرة بالبريد.',
   doneTitle:n=>`شكرًا${n?' '+n:''}! تم إرسال رسالتك.`,doneText:e=>`وصلتني رسالتك وسأرد عليك على ${e} في أقرب وقت، عادةً خلال يوم إلى يومي عمل.`,again:'إرسال رسالة أخرى',fail:'عذرًا، تعذّر إرسال الرسالة. يرجى مراسلتي مباشرة على ',langLabel:'View the site in English'}
 };
@@ -239,6 +239,126 @@ document.querySelectorAll('.case').forEach(c=>{
  });
 })();
 
+
+/* ===== Hero film: "The Midnight Reply" =====
+   A sticky stage inside a tall section. Scroll progress p (0..1) drives one render(p):
+   the camera only ever pulls back, from the customer's message to the whole workflow. */
+const FILM=(function(){
+ const sec=document.getElementById('film');if(!sec)return null;
+ const $=id=>document.getElementById(id),stage=sec.querySelector('.film-stage'),world=$('world'),svg=$('wires');
+ const NS='http://www.w3.org/2000/svg',cl=v=>Math.max(0,Math.min(1,v)),ease=v=>v<.5?4*v*v*v:1-Math.pow(-2*v+2,3)/2,eo=v=>1-Math.pow(1-v,3);
+ const seg=(p,a,b)=>cl((p-a)/(b-a));
+ const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
+ const cards={phone:$('w-phone'),ai:$('w-ai'),crm:$('w-crm'),cal:$('w-cal'),mail:$('w-mail')};
+ let W=0,H=0,paths=[],lens=[],focus0={x:0,y:0},cur=0,target=0,raf=0;
+ const box=el=>({x:el.offsetLeft,y:el.offsetTop,w:el.offsetWidth,h:el.offsetHeight});
+ function layout(){
+  W=world.offsetWidth;H=world.offsetHeight;
+  const mobile=innerWidth<=760,P=box(cards.phone),A=box(cards.ai),C=box(cards.crm),K=box(cards.cal),M=box(cards.mail);
+  const pt=(b,sx,sy)=>[b.x+b.w*sx,b.y+b.h*sy];
+  let d=[];
+  if(!mobile){
+   const p1=pt(P,1,.38),a1=pt(A,0,.4),a2=pt(A,1,.5);
+   d.push(`M${p1} C${p1[0]+90},${p1[1]} ${a1[0]-90},${a1[1]} ${a1}`);
+   [C,K,M].forEach(b=>{const o=pt(b,0,.5);d.push(`M${a2} C${a2[0]+80},${a2[1]} ${o[0]-80},${o[1]} ${o}`)});
+   const a3=pt(A,.5,1),p2=pt(P,1,.78);d.push(`M${a3} C${a3[0]},${a3[1]+120} ${p2[0]+160},${p2[1]+40} ${p2}`);
+  }else{
+   const p1=pt(P,.5,1),a1=pt(A,.5,0),a2=pt(A,.5,1);
+   d.push(`M${p1} L${a1}`);
+   [C,K,M].forEach(b=>{const o=pt(b,.5,0);d.push(`M${a2} C${a2[0]},${a2[1]+30} ${o[0]},${o[1]-30} ${o}`)});
+   const a3=pt(A,0,.5),p2=pt(P,0,.8);d.push(`M${a3} C${a3[0]-14},${a3[1]-120} ${p2[0]-60},${p2[1]+40} ${p2}`);
+  }
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML='<defs><linearGradient id="wireGrad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="'+W+'" y2="0"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient></defs>'+
+   d.map(s=>`<path class="track" d="${s}"/>`).join('')+d.map(s=>`<path class="lit" d="${s}"/>`).join('');
+  paths=[...svg.querySelectorAll('path.lit')];lens=paths.map(pa=>pa.getTotalLength());
+  paths.forEach((pa,i)=>{pa.style.strokeDasharray=lens[i];pa.style.strokeDashoffset=lens[i]});
+  const m=$('msg-in'),bx=P.x+m.offsetLeft+m.offsetWidth/2,by=P.y+m.offsetTop+m.offsetHeight/2;
+  focus0={x:bx,y:mobile?by+40:by};
+ }
+ // camera keyframes: [progress, scale, focus]. Scale only ever falls (one direction: pulling back);
+ // the focus glides message → AI → outputs → whole system so each step is framed clear of the captions.
+ let KEYS=[];
+ function buildKeys(){
+  const vw=stage.clientWidth,vh=stage.clientHeight,top=68,mobile=vw<=760;
+  const s1=Math.min(vw*(mobile?.94:.9)/W,(vh-top)*(mobile?.9:.86)/H);
+  const A=box(cards.ai),C=box(cards.crm),M=box(cards.mail),K=box(cards.cal);
+  const ai={x:A.x+A.w/2,y:A.y+A.h/2},outs=mobile?{x:(C.x+M.x+M.w)/2,y:C.y+C.h/2-20}:{x:C.x+C.w/2-120,y:(C.y+M.y+M.h)/2},mid={x:W/2,y:H/2};
+  const fitAI=Math.min((vw-40)/A.w,(vh-top)*.5/A.h),fitOut=mobile?Math.min((vw-24)/(M.x+M.w-C.x),1):Math.min((vw*.55)/(C.w+A.w+260),(vh-top)*.85/(M.y+M.h-C.y));
+  const s0=mobile?Math.min(1.65,(vw-30)/box(cards.phone).w):2.1;
+  const sAI=Math.min(s0*.82,mobile?fitAI*.96:1.3),sOut=Math.min(sAI*.9,Math.max(s1*1.05,fitOut));
+  KEYS=[[0,s0,focus0],[.3,sAI,ai],[.56,sOut,outs],[.84,s1,mid],[1,mobile?s1:s1*.82,mid]];
+ }
+ const sm=v=>v*v*(3-2*v);
+ function camera(p){
+  const vw=stage.clientWidth,vh=stage.clientHeight,top=68,mobile=vw<=760;
+  let i=0;while(i<KEYS.length-2&&p>KEYS[i+1][0])i++;
+  const [pa,sa,fa]=KEYS[i],[pb,sb,fb]=KEYS[i+1],k=sm(cl((p-pa)/(pb-pa)));
+  const s=sa*Math.pow(sb/sa,k),fx=fa.x+(fb.x-fa.x)*k,fy=fa.y+(fb.y-fa.y)*k;
+  const fin=seg(p,.84,1);
+  let cx=mobile?vw/2:vw*(.6+.12*sm(fin));if(!mobile&&document.documentElement.dir==='rtl')cx=vw-cx;
+  const cy=top+(vh-top)*(mobile?.37:.5);
+  world.style.transform=`translate(${(cx-fx*s).toFixed(1)}px,${(cy-fy*s).toFixed(1)}px) scale(${s.toFixed(4)})`;
+  world.style.opacity=(1-(mobile?.85:.72)*seg(p,.82,.9)).toFixed(3);
+ }
+ const wire=(i,a,b,p)=>{const k=seg(p,a,b);paths[i].style.strokeDashoffset=(lens[i]*(1-k)).toFixed(1);return k};
+ function signal(i,el,a,b,p){const k=seg(p,a,b);if(k<=0||k>=1){el.style.opacity=0;return}
+  const q=paths[i].getPointAtLength(lens[i]*eo(k));el.style.opacity=1;el.style.transform=`translate(${q.x}px,${q.y}px)`}
+ const show=(el,k,dy=6)=>{el.style.opacity=k.toFixed(3);el.style.transform=`translateY(${((1-k)*dy).toFixed(1)}px)`};
+ const pop=(el,k)=>{el.style.opacity=k.toFixed(3);el.style.transform=`scale(${(.4+.6*eo(k)).toFixed(3)})`};
+ function render(p){
+  if(!paths.length)return;
+  camera(p);
+  // 1 message → AI
+  wire(0,.12,.24,p);signal(0,$('sig0'),.13,.27,p);
+  cards.phone.classList.toggle('live',p<.16||(p>.74&&p<.86));
+  cards.ai.classList.toggle('live',p>.26&&p<.56);
+  show($('chip1'),seg(p,.28,.31));show($('chip2'),seg(p,.31,.34));
+  $('type-en').style.clipPath=`inset(0 ${(100-100*seg(p,.33,.42)).toFixed(1)}% 0 0)`;
+  $('type-ar').style.clipPath=`inset(0 0 0 ${(100-100*seg(p,.41,.5)).toFixed(1)}%)`;
+  $('ai-state').textContent=T(p<.28?'aiRead':p<.5?'aiWrite':'aiDone');
+  // 2 AI → CRM, calendar, inbox
+  [1,2,3].forEach((i,n)=>{wire(i,.5+n*.02,.58+n*.02,p);signal(i,$('sig'+i),.52+n*.025,.61+n*.025,p)});
+  show($('crm-row'),seg(p,.6,.64),8);const crmOk=p>.66;$('crm-tag').textContent=T(crmOk?'booked':'newLead');$('crm-tag').classList.toggle('ok',crmOk);
+  const slot=seg(p,.63,.67);$('cal-slot').style.background=`rgba(56,225,192,${(slot*.9).toFixed(3)})`;$('cal-slot').firstElementChild.style.opacity=slot;
+  $('mail-line').textContent=T(p>.68?'mailSent':'mailWait');$('mail-line').style.color=p>.68?'var(--acc)':'';
+  pop($('ok-crm'),seg(p,.64,.67));pop($('ok-cal'),seg(p,.66,.69));pop($('ok-mail'),seg(p,.68,.71));
+  [cards.crm,cards.cal,cards.mail].forEach((c,n)=>c.classList.toggle('live',p>.61+n*.025&&p<.8));
+  // 3 reply back to the phone
+  wire(4,.7,.77,p);signal(4,$('sig4'),.71,.79,p);
+  $('ph-typing').style.opacity=(p>.72&&p<.79)?1:0;$('ph-typing').style.display=p<.79?'flex':'none';
+  show($('msg-out'),seg(p,.79,.82));show($('ph-stamp'),seg(p,.81,.84),0);
+  // beats
+  beats.forEach(b=>{let a=0;if(p>=b.in&&p<=b.out){a=p<b.peak?(p-b.in)/Math.max(1e-4,b.peak-b.in):(b.out>1.5?1:1-(p-b.peak)/Math.max(1e-4,b.out-b.peak))}
+   a=cl(a);b.el.style.opacity=a.toFixed(3);b.el.style.visibility=a<.01?'hidden':'visible';
+   if(!b.el.classList.contains('bf'))b.el.style.transform=`translateY(${((1-a)*14*(p<b.peak?1:-1)).toFixed(1)}px)`});
+  $('film-hint').style.opacity=(1-seg(p,0,.05)).toFixed(3);
+  $('film-fade').style.opacity=seg(p,.92,1).toFixed(3);
+ }
+ const progress=()=>{const r=sec.getBoundingClientRect(),span=sec.offsetHeight-stage.offsetHeight;return span>0?cl(-r.top/span):1};
+ function loop(){cur+=(target-cur)*.14;if(Math.abs(target-cur)<.0005)cur=target;render(cur);raf=Math.abs(target-cur)>0?requestAnimationFrame(loop):0}
+ const onScroll=()=>{target=progress();if(still){cur=target;render(cur)}else if(!raf)raf=requestAnimationFrame(loop)};
+ function refresh(){layout();buildKeys();cur=target=progress();render(cur)}
+ addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',refresh);
+ hooks.push(refresh);
+ if(document.fonts)document.fonts.ready.then(refresh);
+ return {refresh,render,settle(){cur=target=progress();render(cur)}};
+})();
+
+/* smooth wheel scrolling (desktop) — touch stays native */
+let lenis=null;
+const JUMP=new URLSearchParams(location.search).get('jump');
+if(!still&&JUMP===null&&window.Lenis&&matchMedia('(pointer:fine)').matches){
+ lenis=new Lenis({lerp:.1,smoothWheel:true});
+ (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})(performance.now());
+ document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const id=a.getAttribute('href');
+  if(id.length<2)return;const el=document.querySelector(id);if(!el)return;e.preventDefault();lenis.scrollTo(id==='#top'?0:el,{offset:-70})}));
+}
+
 /* start in the saved language, or Arabic when the link ends in #ar */
 (function(){let l='en';try{l=localStorage.getItem('mj-lang')||'en'}catch(e){}
  if(location.hash==='#ar')l='ar';setLang(l==='ar'?'ar':'en',false)})();
+
+/* dev contract: ?jump=<scrollY> lands pre-scrolled with the film settled; __ready gates screenshots */
+(function(){const go=()=>{if(JUMP!==null){history.scrollRestoration='manual';scrollTo(0,+JUMP||0)}if(FILM)FILM.refresh();requestAnimationFrame(()=>{window.__ready=true})};
+ (document.fonts?document.fonts.ready:Promise.resolve()).then(go)})();
