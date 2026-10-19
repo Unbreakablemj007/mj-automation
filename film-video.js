@@ -7,7 +7,7 @@ const VFILM=(function(){
  const sec=document.getElementById('film'),cv=document.getElementById('film-canvas');
  if(!sec||!cv){window.__ready=true;return null}
  const stage=sec.querySelector('.film-stage'),ctx=cv.getContext('2d'),$=id=>document.getElementById(id);
- const N=240,FPS=24,HAS_HD=false;let DIR='frames';const src=i=>`${DIR}/f${String(i+1).padStart(3,'0')}.webp`;
+ const N=240,FPS=24,HAS_HD=true;let DIR='frames';const src=i=>`${DIR}/f${String(i+1).padStart(3,'0')}.webp`;
  const cl=v=>Math.max(0,Math.min(1,v)),seg=(p,a,b)=>cl((p-a)/(b-a)),sm=v=>v*v*(3-2*v);
  const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
  // scroll progress -> clip seconds. The burst (4.5s-6.5s) gets more scroll so it doesn't flash past;
@@ -60,7 +60,7 @@ const VFILM=(function(){
    // a local affine per field; in Arabic the clip is mirrored, so the field is entered from its other side and the text stays readable
    const A=P(rtl?u+bw:u,v),B=P(rtl?u:u+bw,v),C=P(rtl?u+bw:u,v+bh);
    ctx.setTransform(dpr*(B[0]-A[0])/bw,dpr*(B[1]-A[1])/bw,dpr*(C[0]-A[0])/bh,dpr*(C[1]-A[1])/bh,dpr*A[0],dpr*A[1]);
-   if(fa){const g=ctx.createLinearGradient(0,0,0,bh);g.addColorStop(0,'rgb(154,230,234)');g.addColorStop(1,'rgb(138,215,224)');
+   if(fa){const g=ctx.createLinearGradient(0,0,0,bh);g.addColorStop(0,'rgb(142,242,255)');g.addColorStop(1,'rgb(128,228,248)');
     ctx.globalAlpha=fa;ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(-3,-3,bw+6,bh+6,15):ctx.rect(-3,-3,bw+6,bh+6);ctx.fill()}
    ctx.globalAlpha=a;
    for(const [dx,dy,font,col,text,align] of lines){ctx.font=font;ctx.fillStyle=col;ctx.textAlign=align||'left';ctx.fillText(text,dx,dy)}}
