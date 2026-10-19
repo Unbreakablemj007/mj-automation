@@ -93,9 +93,9 @@ const VFILM=(function(){
   if(y+h<H+F)edge(0,y+h,0,y+h-F,0,y+h-F,W,F+1);
   if(x>0)ctx.fillStyle=BG,ctx.fillRect(0,0,x,H);if(x+w<W)ctx.fillStyle=BG,ctx.fillRect(x+w,0,W-x-w,H);
   if(y>0)ctx.fillStyle=BG,ctx.fillRect(0,0,W,y);if(y+h<H)ctx.fillStyle=BG,ctx.fillRect(0,y+h,W,H-y-h);
-  // vignette softens the 720p source and pulls the eye to the centre
+  // a light vignette pulls the eye to the centre
   const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);
-  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
+  v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.3)');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
  }
  function render(q){p=q;const f=frameAt(p);if(f!==want){want=f;slide()}paint();
   beats.forEach(b=>{let a=0;if(p>=b.in&&p<=b.out){a=p<b.peak?(p-b.in)/Math.max(1e-4,b.peak-b.in):(b.out>1.5?1:1-(p-b.peak)/Math.max(1e-4,b.out-b.peak))}
@@ -110,11 +110,6 @@ const VFILM=(function(){
  function refresh(){layout();cur=target=progress();render(cur)}
  addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',refresh);
  hooks.push(refresh);
-
- // grain: one small noise tile, laid over the canvas by CSS
- (function(){const g=document.createElement('canvas');g.width=g.height=128;const c=g.getContext('2d'),d=c.createImageData(128,128);
-  for(let i=0;i<d.data.length;i+=4){const n=Math.random()*255|0;d.data[i]=d.data[i+1]=d.data[i+2]=n;d.data[i+3]=255}
-  c.putImageData(d,0,0);const el=sec.querySelector('.film-grain');if(el)el.style.backgroundImage=`url(${g.toDataURL()})`})();
 
  refresh();
  // 1080p frames where the picture is drawn wide on a large screen; phones keep the lighter 1280 set

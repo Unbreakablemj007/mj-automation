@@ -503,13 +503,10 @@ html[lang=ar] .beat-big,html[lang=ar] .bf h1{line-height:1.3}
 
 /* ===== Hero film, video version (video.html) ===== */
 .film-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#08121a}
-.film-grain{position:absolute;inset:-50%;opacity:.035;pointer-events:none;animation:grain 1s steps(4) infinite}
-@keyframes grain{25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-1%)}}
 .film-video .film-scrim{background:linear-gradient(90deg,rgba(8,12,18,.82) 0%,rgba(8,12,18,.4) 32%,transparent 55%),linear-gradient(0deg,rgba(8,12,18,.6) 0%,transparent 32%)}
 html[lang=ar] .film-video .film-scrim{background:linear-gradient(270deg,rgba(8,12,18,.82) 0%,rgba(8,12,18,.4) 32%,transparent 55%),linear-gradient(0deg,rgba(8,12,18,.6) 0%,transparent 32%)}
 @media(max-width:760px){
  .film-video .film-scrim,html[lang=ar] .film-video .film-scrim{background:linear-gradient(0deg,rgba(8,12,18,.97) 0%,rgba(8,12,18,.8) 34%,transparent 52%)}
 }
-@media(prefers-reduced-motion:reduce){.film-grain{animation:none}}
 html[lang=ar] .film-video .beat.bf{width:min(540px,calc(100vw - 40px))}
 @media(max-width:760px){html[lang=ar] .film-video .beat.bf{width:auto}}
