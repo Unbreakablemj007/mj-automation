@@ -10,6 +10,8 @@ Plain HTML, CSS and JavaScript with no build step.
 | `styles.css` | Styles, including right-to-left (Arabic) rules |
 | `script.js` | Animations, ROI calculator, language switch, contact form, contact links |
 | `i18n-ar.js` | Arabic translations |
+| `film-video.js` | The hero film: plays `frames/` as you scroll and writes the sample invoice data onto the dashboard |
+| `frames/`, `frames-hd/` | The hero film's frames (1280 wide for phones, 1920 wide for large screens) |
 | `og-image.png` | Image shown when the link is shared |
 
 ## Editing
@@ -17,6 +19,7 @@ Plain HTML, CSS and JavaScript with no build step.
 - **Contact links:** fill in `CONTACT` at the top of `script.js` (booking link, WhatsApp number, LinkedIn, GitHub). Empty values stay hidden.
 - **Contact form:** sends through [FormSubmit](https://formsubmit.co) to the address in `MAIL_TO` in `script.js`. The first real submission sends an activation email that must be confirmed once.
 - **Arabic text:** edit `i18n-ar.js`. Keys are the English text exactly as it appears on the page.
+- **Hero film data:** the dashboard's sample values (amount, invoice number, due date, status) are in `FIELDS` in `film-video.js`.
 - **Arabic link:** add `#ar` to the URL to open the site in Arabic.
 
 ## Deploying

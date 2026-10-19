@@ -240,76 +240,7 @@ document.querySelectorAll('.case').forEach(c=>{
 })();
 
 
-/* ===== Hero film: "Paper to Pulse" =====
-   A sticky stage inside a tall section. Scroll progress p (0..1) drives one render(p).
-   One direction only: the camera rises. The desk sinks away, its paperwork lifts, folds into
-   light and streams up into a live dashboard that comes down into view. */
-const FILM=(function(){
- const sec=document.getElementById('film');if(!sec||!document.getElementById('desk'))return null;
- const $=id=>document.getElementById(id),stage=sec.querySelector('.film-stage'),desk=$('desk'),dash=$('dash');
- const cl=v=>Math.max(0,Math.min(1,v)),seg=(p,a,b)=>cl((p-a)/(b-a)),sm=v=>v*v*(3-2*v),eo=v=>1-Math.pow(1-v,3),ei=v=>v*v*v;
- const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
- // desk items: [kind, x, y, rotation, w, h, html, flies]
- const L=(n)=>'<i></i>'.repeat(n);
- const ITEMS=[
-  ['paper',-360,-110,-9,150,196,'<b>INVOICE</b>'+L(2)+'<i class="s"></i>'+L(3)+'<i class="t"></i><em>OVERDUE</em>',1],
-  ['paper',-150,-175,5,150,196,'<b>INVOICE</b>'+L(3)+'<i class="s"></i>'+L(2)+'<i class="t"></i>',1],
-  ['sticky y',-250,95,-5,112,112,'Call back<br>Sara!!',1],
-  ['paper',40,-70,-13,172,222,'<b>MONTHLY REPORT</b>'+L(2)+'<i class="s"></i>'+L(4)+'<i class="s"></i>',1],
-  ['receipt',225,-160,11,92,190,'TOTAL'+L(6)+'<i class="s"></i>',1],
-  ['sticky p',70,120,8,112,112,'Follow up<br>on quote',1],
-  ['envelope',335,45,-9,176,112,'<em>UNPAID</em>',1],
-  ['sticky g',395,-150,5,104,104,'Update<br>CRM',1],
-  ['paper',-445,110,11,140,186,'<b>INVOICE</b>'+L(2)+'<i class="s"></i>'+L(2)+'<i class="t"></i>',1],
-  ['phone',180,165,-17,86,164,'<span class="badge">248</span>',0],
-  ['mug',-60,205,0,86,86,'',0]
- ];
- const items=ITEMS.map(([k,x,y,r,w,h,html,fly],i)=>{const el=document.createElement('div');el.className='it '+k;
-  el.style.width=w+'px';el.style.height=h+'px';el.style.margin=`${-h/2}px 0 0 ${-w/2}px`;el.innerHTML=`<div class="face">${html}</div>`;
-  desk.appendChild(el);const order=[3,0,5,1,7,2,6,4,8][i]??i;return {el,x,y,r,fly,t:fly?.2+order*.022:0}});
- const tiles=[0,1,2,3].map(i=>$('t'+i)),line=$('pulse-line'),area=$('pulse-area'),dot=$('pulse-dot');
- let base=1,cur=0,target=0,raf=0,mobile=false;
- function layout(){const vw=stage.clientWidth,vh=stage.clientHeight;mobile=vw<=760;base=mobile?Math.min(vw/560,1.2):Math.min(vw/1250,vh/760,1.1)}
- function render(p){
-  const vh=stage.clientHeight;
-  // camera rises: the desk sinks and tilts away, then fades out
-  const rise=sm(seg(p,.06,.72));
-  const rtl=document.documentElement.dir==='rtl',side=mobile?0:stage.clientWidth*.14*(rtl?-1:1)*(1-rise);
-  desk.style.transform=`translate3d(${side.toFixed(1)}px,${(rise*vh*.62).toFixed(1)}px,${(-rise*420).toFixed(1)}px) rotateX(${(50+rise*14).toFixed(2)}deg) scale(${(base*(mobile?1.05:1)).toFixed(3)})`;
-  desk.style.opacity=(1-seg(p,.6,.74)).toFixed(3);
-  // paperwork lifts, turns to face us, folds into a thin strip of light, then streams upward
-  items.forEach(o=>{
-   if(!o.fly){o.el.style.transform=`translate3d(${o.x}px,${o.y}px,1px) rotate(${o.r}deg)`;return}
-   const lift=eo(seg(p,o.t,o.t+.1)),fold=sm(seg(p,o.t+.07,o.t+.13)),fly=ei(seg(p,o.t+.12,o.t+.26));
-   o.el.classList.toggle('glow',fold>.55);
-   const sx=1-.96*fold;
-   o.el.style.transform=`translate3d(${o.x*(1-.35*lift)}px,${o.y*(1-.35*lift)}px,${(lift*170+fly*260).toFixed(1)}px) rotateX(${(-50*lift).toFixed(2)}deg) rotate(${(o.r*(1-lift)).toFixed(2)}deg) translateY(${(-fly*2200).toFixed(1)}px) scale(${sx.toFixed(3)},${(1+fold*.5).toFixed(3)})`;
-   o.el.style.opacity=(1-seg(p,o.t+.22,o.t+.27)).toFixed(3);
-  });
-  // the dashboard comes down into view from above and settles; in the finale it steps aside for the headline
-  const arrive=eo(seg(p,.34,.62)),fin=sm(seg(p,.84,.96));
-  const dy=(-1+arrive)*vh*.95+(mobile?-vh*.06-fin*vh*.16:0),dx=mobile?0:fin*Math.min(stage.clientWidth*.27,380)*(rtl?-1:1);
-  const ds=1-fin*(mobile?.12:.3);
-  dash.style.transform=`translate(calc(-50% + ${dx.toFixed(1)}px),calc(-50% + ${dy.toFixed(1)}px)) scale(${ds.toFixed(3)})`;
-  dash.style.opacity=(seg(p,.32,.4)*(1-fin*(mobile?.75:.55))).toFixed(3);
-  tiles.forEach((t,i)=>{const k=seg(p,.5+i*.035,.53+i*.035);t.classList.toggle('on',k>.5);const c=t.querySelector('i');c.style.opacity=k;c.style.transform=`scale(${(.4+.6*eo(k)).toFixed(3)})`});
-  const draw=sm(seg(p,.56,.78));line.style.strokeDashoffset=(1-draw).toFixed(3);area.style.opacity=(draw*.9).toFixed(3);dot.style.opacity=seg(p,.76,.8);
-  // copy beats
-  beats.forEach(b=>{let a=0;if(p>=b.in&&p<=b.out){a=p<b.peak?(p-b.in)/Math.max(1e-4,b.peak-b.in):(b.out>1.5?1:1-(p-b.peak)/Math.max(1e-4,b.out-b.peak))}
-   a=cl(a);b.el.style.opacity=a.toFixed(3);b.el.style.visibility=a<.01?'hidden':'visible';
-   if(!b.el.classList.contains('bf'))b.el.style.transform=`translateY(${((1-a)*14*(p<b.peak?1:-1)).toFixed(1)}px)`});
-  $('film-hint').style.opacity=(1-seg(p,0,.05)).toFixed(3);
-  $('film-fade').style.opacity=seg(p,.92,1).toFixed(3);
- }
- const progress=()=>{const r=sec.getBoundingClientRect(),span=sec.offsetHeight-stage.offsetHeight;return span>0?cl(-r.top/span):1};
- function loop(){cur+=(target-cur)*.14;if(Math.abs(target-cur)<.0005)cur=target;render(cur);raf=Math.abs(target-cur)>0?requestAnimationFrame(loop):0}
- const onScroll=()=>{target=progress();if(still){cur=target;render(cur)}else if(!raf)raf=requestAnimationFrame(loop)};
- function refresh(){layout();cur=target=progress();render(cur)}
- addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',refresh);
- hooks.push(refresh);
- refresh();
- return {refresh,render};
-})();
+/* the hero film lives in film-video.js */
 
 /* smooth wheel scrolling (desktop) — touch stays native */
 let lenis=null;
@@ -326,5 +257,5 @@ if(!still&&JUMP===null&&window.Lenis&&matchMedia('(pointer:fine)').matches){
  if(location.hash==='#ar')l='ar';setLang(l==='ar'?'ar':'en',false)})();
 
 /* dev contract: ?jump=<scrollY> lands pre-scrolled with the film settled; __ready gates screenshots */
-(function(){const go=()=>{if(JUMP!==null){history.scrollRestoration='manual';scrollTo(0,+JUMP||0)}if(FILM)FILM.refresh();requestAnimationFrame(()=>{if(!window.__holdReady)window.__ready=true})};
+(function(){const go=()=>{if(JUMP!==null){history.scrollRestoration='manual';scrollTo(0,+JUMP||0)}requestAnimationFrame(()=>{if(!window.__holdReady)window.__ready=true})};
  (document.fonts?document.fonts.ready:Promise.resolve()).then(go)})();

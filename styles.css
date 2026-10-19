@@ -406,13 +406,12 @@ html[lang=ar] .cform input,html[lang=ar] .cform textarea,html[lang=ar] .fsend{fo
 html[lang=ar] .fdone .btn{font-family:'IBM Plex Sans Arabic',Inter,sans-serif}
 @media(prefers-reduced-motion:reduce){.fdone-ico,.fdone-ico svg{animation:none;stroke-dashoffset:0}}
 
-/* ===== Hero film: "The Midnight Reply" ===== */
+/* ===== Hero film: a scroll-scrubbed clip on a sticky stage ===== */
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
 .lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
 .film{position:relative;height:340vh;background:var(--bg)}
 .film-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-.film-bg{position:absolute;inset:0;background:radial-gradient(900px 520px at 70% 10%,rgba(91,140,255,.16),transparent 70%),radial-gradient(700px 500px at 15% 80%,rgba(56,225,192,.10),transparent 70%),radial-gradient(1px 1px at 12% 22%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 82% 34%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 46% 78%,#fff4 50%,transparent 51%),radial-gradient(1px 1px at 64% 14%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 28% 58%,#fff3 50%,transparent 51%),radial-gradient(1px 1px at 90% 70%,#fff4 50%,transparent 51%),var(--bg)}
 /* overlays */
 .film-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(11,13,18,.92) 0%,rgba(11,13,18,.55) 34%,transparent 58%)}
 .beats{position:absolute;inset:0;pointer-events:none}
@@ -436,59 +435,8 @@ html[lang=ar] .beat-big,html[lang=ar] .bf h1{line-height:1.3}
  .ph-typing i{animation:none}
 }
 
-/* ===== "Paper to Pulse" scene ===== */
-.film-bg{background:radial-gradient(900px 600px at 50% 120%,rgba(245,196,81,.10),transparent 60%),radial-gradient(800px 500px at 50% -20%,rgba(91,140,255,.18),transparent 70%),var(--bg)}
-.desk-wrap{position:absolute;inset:0;perspective:1100px;perspective-origin:50% 0%;pointer-events:none;direction:ltr}
-.desk{position:absolute;left:50%;top:58%;width:1100px;height:640px;margin:-320px 0 0 -550px;transform-style:preserve-3d;border-radius:28px;
- background:radial-gradient(520px 360px at 32% 30%,rgba(255,206,120,.28),transparent 70%),repeating-linear-gradient(92deg,rgba(255,255,255,.018) 0 2px,transparent 2px 9px),linear-gradient(180deg,#2c2119,#17110d);
- box-shadow:0 60px 120px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.04);will-change:transform,opacity}
-.desk-lamp{position:absolute;left:18%;top:8%;width:420px;height:300px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,214,140,.22),transparent);transform:translateZ(1px)}
-.it{position:absolute;left:50%;top:50%;transform-origin:50% 50%;backface-visibility:hidden;will-change:transform,opacity}
-.it .face{position:absolute;inset:0;border-radius:4px;overflow:hidden;transition:none}
-.paper .face{background:#ece6d8;box-shadow:0 10px 24px rgba(0,0,0,.45);padding:14px;color:#3a352c;font:600 11px Inter,sans-serif;letter-spacing:.5px}
-.paper .face b{display:block;font-size:13px;letter-spacing:1.5px;margin-bottom:8px}
-.paper .face i{display:block;height:5px;border-radius:3px;background:#c9c2b2;margin:7px 0}
-.paper .face i.s{width:60%}.paper .face i.t{width:35%;margin-left:auto;background:#a39c8c}
-.paper .face em{position:absolute;right:12px;bottom:12px;font-style:normal;font-size:12px;color:#b4452f;border:1.5px solid #b4452f;padding:1px 6px;border-radius:3px;transform:rotate(-8deg)}
-.sticky .face{box-shadow:0 8px 18px rgba(0,0,0,.4);padding:12px;font:600 14px/1.25 'Comic Sans MS','Segoe Print',cursive;color:#3b3214}
-.sticky.y .face{background:#f6d860}.sticky.p .face{background:#f4a6b8}.sticky.g .face{background:#a8e6b4}
-.receipt .face{background:#f4f1ea;padding:10px;font:500 10px 'JetBrains Mono',monospace;color:#4a463e;-webkit-mask:linear-gradient(#000 92%,transparent),radial-gradient(4px at 50% 100%,transparent 98%,#000) 0 100%/9px 8px repeat-x;mask:linear-gradient(#000 92%,transparent)}
-.receipt .face i{display:block;height:4px;background:#cfcabd;margin:6px 0;border-radius:2px}
-.envelope .face{background:#d9cdb3;box-shadow:0 8px 20px rgba(0,0,0,.45)}
-.envelope .face::before{content:"";position:absolute;inset:0;background:linear-gradient(155deg,transparent 49%,rgba(0,0,0,.12) 50%,transparent 51%),linear-gradient(25deg,transparent 49%,rgba(0,0,0,.12) 50%,transparent 51%)}
-.envelope .face em{position:absolute;left:14px;bottom:12px;font:700 12px Inter;color:#b4452f;letter-spacing:1px;font-style:normal}
-.phone .face{background:#0e121b;border:3px solid #2a3348;border-radius:18px;box-shadow:0 12px 28px rgba(0,0,0,.6)}
-.phone .face::after{content:"";position:absolute;inset:16px 10px;border-radius:8px;background:linear-gradient(160deg,#1b2a44,#121a2a)}
-.phone .badge{position:absolute;right:-12px;top:-12px;z-index:2;min-width:44px;height:30px;padding:0 9px;border-radius:15px;background:#ff5a4f;color:#fff;font:800 14px Inter;display:grid;place-items:center;box-shadow:0 4px 12px rgba(255,90,79,.5)}
-.mug .face{border-radius:50%;background:radial-gradient(circle at 50% 50%,#2a1a10 0 52%,#e9e2d4 53% 63%,#cfc7b8 64% 100%);box-shadow:0 10px 20px rgba(0,0,0,.5)}
-.it.glow .face{background:linear-gradient(180deg,rgba(56,225,192,0),#38e1c0 30%,#5b8cff 70%,rgba(91,140,255,0))!important;box-shadow:0 0 22px 6px rgba(56,225,192,.55)!important;color:transparent!important;border:0!important}
-.it.glow .face *{opacity:0}
-/* dashboard */
-.dash{position:absolute;left:50%;top:50%;width:min(760px,calc(100vw - 32px));transform:translate(-50%,-50%);background:linear-gradient(165deg,rgba(20,24,36,.96),rgba(14,18,28,.96));border:1px solid rgba(56,225,192,.45);border-radius:22px;padding:22px;box-shadow:0 0 0 1px rgba(56,225,192,.12),0 40px 120px rgba(0,0,0,.6),0 0 80px rgba(56,225,192,.12);will-change:transform,opacity;direction:ltr;text-align:left;color:var(--text)}
-.dash-head{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-.dash-head b{font-size:17px}
-.dash-dot{width:10px;height:10px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc)}
-.dash-live{margin-left:auto;font-size:11px;letter-spacing:2px;color:var(--acc);border:1px solid var(--acc);padding:3px 9px;border-radius:99px}
-.dash-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
-.tile{position:relative;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;transition:border-color .3s,box-shadow .3s}
-.tile small{display:block;color:var(--mute);font-size:12px}
-.tile b{display:block;font-size:17px;margin-top:4px;opacity:.25;transition:opacity .3s}
-.tile i{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:#06110e;font-style:normal;font-size:12px;font-weight:800;opacity:0;transform:scale(.4)}
-.tile.on{border-color:rgba(56,225,192,.6);box-shadow:0 0 24px rgba(56,225,192,.15)}.tile.on b{opacity:1}
-.dash-chart{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:12px;height:150px}
-.dash-chart svg{width:100%;height:100%;display:block;overflow:visible}
-.dash-chart .grid{stroke:#1e2534;stroke-width:1;fill:none}
-.dash-chart .area{fill:url(#pulseFill);opacity:0}
-.dash-chart .line{fill:none;stroke:url(#pulseLine);stroke-width:3;stroke-linecap:round;stroke-dasharray:1 1;stroke-dashoffset:1;vector-effect:non-scaling-stroke}
-#pulse-dot{fill:#38e1c0;opacity:0;filter:drop-shadow(0 0 6px #38e1c0)}
 @media(max-width:760px){
  .film{height:300vh}
- .desk-wrap{perspective-origin:50% 20%}
- .desk{top:38%}
- .dash{padding:16px}
- .dash-tiles{grid-template-columns:1fr 1fr;gap:8px}
- .tile{padding:10px}.tile b{font-size:14px}
- .dash-chart{height:110px}
  .film-scrim{background:linear-gradient(0deg,rgba(11,13,18,.96) 0%,rgba(11,13,18,.7) 30%,transparent 55%)}
  html[lang=ar] .film-scrim{background:linear-gradient(0deg,rgba(11,13,18,.96) 0%,rgba(11,13,18,.7) 30%,transparent 55%)}
  .beat{left:20px;right:20px;width:auto;bottom:8vh}
@@ -501,7 +449,7 @@ html[lang=ar] .beat-big,html[lang=ar] .bf h1{line-height:1.3}
  .film-hint{bottom:12px}
 }
 
-/* ===== Hero film, video version (video.html) ===== */
+/* ===== Hero film: canvas and framing ===== */
 .film-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;background:#08121a}
 .film-video .film-scrim{background:linear-gradient(90deg,rgba(8,12,18,.82) 0%,rgba(8,12,18,.4) 32%,transparent 55%),linear-gradient(0deg,rgba(8,12,18,.6) 0%,transparent 32%)}
 html[lang=ar] .film-video .film-scrim{background:linear-gradient(270deg,rgba(8,12,18,.82) 0%,rgba(8,12,18,.4) 32%,transparent 55%),linear-gradient(0deg,rgba(8,12,18,.6) 0%,transparent 32%)}

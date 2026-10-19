@@ -1,6 +1,6 @@
-/* ===== Hero film, video version (test page /video.html) =====
-   The same sticky stage and scroll progress p (0..1) as the coded film, but the picture is a
-   pre-rendered clip drawn frame by frame on a canvas. Frames are WebP stills kept as blobs;
+/* ===== Hero film =====
+   A sticky stage inside a tall section; scroll progress p (0..1) picks the frame of a
+   pre-rendered clip, drawn on a canvas. Frames are WebP stills kept as blobs;
    only a small window around the playhead is decoded into ImageBitmaps at any time. */
 window.__holdReady=true;
 const VFILM=(function(){

@@ -65,24 +65,9 @@
 </header>
 
 <main>
-<section class="film" id="film" aria-label="From a desk buried in paperwork to a calm live dashboard: invoices, notes and reports are captured and synced automatically">
+<section class="film film-video" id="film" aria-label="From a desk buried in paperwork to a calm live dashboard: invoices, notes and reports are captured and synced automatically">
   <div class="film-stage">
-    <div class="film-bg" aria-hidden="true"></div>
-    <div class="desk-wrap" aria-hidden="true" data-dyn lang="en"><div class="desk" id="desk"><div class="desk-lamp"></div></div></div>
-    <div class="dash" id="dash" aria-hidden="true" data-dyn lang="en">
-      <div class="dash-head"><span class="dash-dot"></span><b>Business pulse</b><span class="dash-live mono">LIVE</span></div>
-      <div class="dash-tiles">
-        <div class="tile" id="t0"><small>Invoices</small><b>Synced</b><i>✓</i></div>
-        <div class="tile" id="t1"><small>Follow-ups</small><b>Sent</b><i>✓</i></div>
-        <div class="tile" id="t2"><small>Reports</small><b>Delivered</b><i>✓</i></div>
-        <div class="tile" id="t3"><small>New leads</small><b>Logged</b><i>✓</i></div>
-      </div>
-      <div class="dash-chart"><svg viewBox="0 0 600 140" preserveAspectRatio="none"><defs><linearGradient id="pulseFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38e1c0" stop-opacity=".35"/><stop offset="1" stop-color="#38e1c0" stop-opacity="0"/></linearGradient><linearGradient id="pulseLine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#38e1c0"/><stop offset="1" stop-color="#5b8cff"/></linearGradient></defs>
-        <path class="grid" d="M0 35H600M0 70H600M0 105H600"/>
-        <path id="pulse-area" class="area" d="M0 118 C60 116 90 110 130 104 S210 96 250 88 S320 92 350 72 S420 58 460 50 S540 30 600 22 V140 H0Z"/>
-        <path id="pulse-line" class="line" pathLength="1" d="M0 118 C60 116 90 110 130 104 S210 96 250 88 S320 92 350 72 S420 58 460 50 S540 30 600 22"/>
-        <circle id="pulse-dot" r="5" cx="600" cy="22"/></svg></div>
-    </div>
+    <canvas class="film-canvas" id="film-canvas" aria-hidden="true"></canvas>
     <div class="film-scrim" aria-hidden="true"></div>
     <div class="beats">
       <div class="beat b0" data-in="-0.1" data-peak="0" data-out="0.16">
@@ -90,8 +75,8 @@
         <p class="beat-big">Still running your business<br><span class="grad">by hand?</span></p>
         <p class="beat-sub">Invoices, follow-ups and reports pile up every night.</p>
       </div>
-      <div class="beat b1" data-in="0.2" data-peak="0.3" data-out="0.44"><p class="beat-big">Every invoice, email and note,<br><span class="grad">captured and sorted.</span></p></div>
-      <div class="beat b2" data-in="0.5" data-peak="0.6" data-out="0.76"><p class="beat-big">Your numbers,<br><span class="grad">always up to date.</span></p></div>
+      <div class="beat b1" data-in="0.2" data-peak="0.3" data-out="0.42"><p class="beat-big">Every invoice, email and note,<br><span class="grad">captured and sorted.</span></p></div>
+      <div class="beat b2" data-in="0.6" data-peak="0.68" data-out="0.8"><p class="beat-big">Your numbers,<br><span class="grad">always up to date.</span></p></div>
       <div class="beat bf" data-in="0.86" data-peak="0.95" data-out="2">
         <p class="eyebrow mono">MJ Automations · Mohammad Jaafar</p>
         <h1>I automate the work <span class="grad">so your business runs itself.</span></h1>
@@ -411,5 +396,6 @@
 <script src="vendor/lenis.min.js"></script>
 <script src="i18n-ar.js"></script>
 <script src="script.js"></script>
+<script src="film-video.js"></script>
 </body>
 </html>
