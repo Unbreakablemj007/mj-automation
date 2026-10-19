@@ -245,7 +245,7 @@ document.querySelectorAll('.case').forEach(c=>{
    One direction only: the camera rises. The desk sinks away, its paperwork lifts, folds into
    light and streams up into a live dashboard that comes down into view. */
 const FILM=(function(){
- const sec=document.getElementById('film');if(!sec)return null;
+ const sec=document.getElementById('film');if(!sec||!document.getElementById('desk'))return null;
  const $=id=>document.getElementById(id),stage=sec.querySelector('.film-stage'),desk=$('desk'),dash=$('dash');
  const cl=v=>Math.max(0,Math.min(1,v)),seg=(p,a,b)=>cl((p-a)/(b-a)),sm=v=>v*v*(3-2*v),eo=v=>1-Math.pow(1-v,3),ei=v=>v*v*v;
  const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
@@ -326,5 +326,5 @@ if(!still&&JUMP===null&&window.Lenis&&matchMedia('(pointer:fine)').matches){
  if(location.hash==='#ar')l='ar';setLang(l==='ar'?'ar':'en',false)})();
 
 /* dev contract: ?jump=<scrollY> lands pre-scrolled with the film settled; __ready gates screenshots */
-(function(){const go=()=>{if(JUMP!==null){history.scrollRestoration='manual';scrollTo(0,+JUMP||0)}if(FILM)FILM.refresh();requestAnimationFrame(()=>{window.__ready=true})};
+(function(){const go=()=>{if(JUMP!==null){history.scrollRestoration='manual';scrollTo(0,+JUMP||0)}if(FILM)FILM.refresh();requestAnimationFrame(()=>{if(!window.__holdReady)window.__ready=true})};
  (document.fonts?document.fonts.ready:Promise.resolve()).then(go)})();
