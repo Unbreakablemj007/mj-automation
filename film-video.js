@@ -22,7 +22,9 @@ const VFILM=(function(){
  const order=[];{const seen=new Set();[N-1,0].forEach(i=>{seen.add(i);order.push(i)});
   for(const step of [8,4,2,1])for(let i=0;i<N;i+=step)if(!seen.has(i)){seen.add(i);order.push(i)}}
  function fetchAll(list){let next=0;const run=()=>{if(next>=list.length)return;const i=list[next++];
-   fetch(src(i)).then(r=>r.ok?r.blob():null).then(b=>{if(b){blobs[i]=b;if(Math.abs(i-want)<=WIN)decode(i)}}).catch(()=>{}).finally(run)};
+   // blob via fetch; where fetch is blocked, fall back to a plain image element
+   const viaImg=()=>{const im=new Image();im.src=src(i);return im.decode().then(()=>im)};
+   fetch(src(i)).then(r=>r.ok?r.blob():viaImg()).catch(viaImg).then(b=>{blobs[i]=b;if(Math.abs(i-want)<=WIN)decode(i)}).catch(()=>{}).finally(run)};
   for(let k=0;k<6;k++)run()}
  function decode(i){if(bmps.has(i)||pending.has(i)||!blobs[i])return;pending.add(i);
   createImageBitmap(blobs[i]).then(b=>{pending.delete(i);
