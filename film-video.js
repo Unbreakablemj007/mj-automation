@@ -1,26 +1,34 @@
-/* ===== Hero film =====
+/* ===== Hero film: "Paper to System" =====
    A sticky stage inside a tall section; scroll progress p (0..1) picks the frame of a
    pre-rendered clip, drawn on a canvas. Frames are WebP stills kept as blobs;
-   only a small window around the playhead is decoded into ImageBitmaps at any time. */
+   only a small window around the playhead is decoded into ImageBitmaps at any time.
+   The clip has 497 frames; KEEP lists the ones shipped, picked so each step between them changes the picture by
+   about the same amount (dense in the fast opening, sparse in the still ending). Between two kept frames the
+   player blends them, so the motion stays fluid at roughly half the download. */
 window.__holdReady=true;
 const VFILM=(function(){
  const sec=document.getElementById('film'),cv=document.getElementById('film-canvas');
  if(!sec||!cv){window.__ready=true;return null}
  const stage=sec.querySelector('.film-stage'),ctx=cv.getContext('2d'),$=id=>document.getElementById(id);
- const N=121,FPS=24,HAS_HD=true;let DIR='frames';const src=i=>`${DIR}/f${String(i+1).padStart(3,'0')}.webp`;
+ const N=497,FPS=24,HAS_HD=true,KEEP=[0,2,4,5,6,8,9,10,12,13,15,16,17,19,20,21,23,24,25,27,28,29,31,32,33,35,36,37,39,40,41,42,44,45,46,48,49,50,52,53,55,56,58,59,61,62,64,65,66,67,68,69,70,71,73,74,75,76,78,79,80,81,83,84,85,86,88,89,91,92,93,94,95,96,97,98,99,100,101,103,104,106,107,109,111,112,114,116,117,119,120,122,124,125,127,128,130,132,134,136,138,140,142,144,146,149,151,153,155,157,160,162,164,166,169,171,173,175,178,180,182,185,187,190,192,194,197,199,202,204,206,208,210,213,215,218,221,224,228,231,235,236,240,244,245,249,253,257,258,262,266,268,272,273,277,279,283,284,288,290,294,295,299,301,305,307,311,314,318,320,324,327,331,333,337,340,344,347,351,355,359,360,364,366,370,371,375,379,383,387,391,395,399,400,404,408,410,412,414,415,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,440,441,443,444,446,448,450,453,456,459,463,464,468,469,473,496],M=KEEP.length;
+ let DIR='frames';const src=j=>`${DIR}/f${String(KEEP[j]+1).padStart(3,'0')}.webp`;
  const cl=v=>Math.max(0,Math.min(1,v)),seg=(p,a,b)=>cl((p-a)/(b-a)),sm=v=>v*v*(3-2*v);
  const beats=[...sec.querySelectorAll('.beat')].map(el=>({el,in:+el.dataset.in,peak:+el.dataset.peak,out:+el.dataset.out}));
- // scroll progress -> clip seconds: the desk, the lift, the flight into the screen and the chart each get
- // their stretch of scroll; the last frame holds while the headline settles.
- const KEYS=[[0,0],[.2,1],[.42,2.3],[.65,3.5],[.82,4.4],[.92,5],[1,5]];
+ // scroll progress -> clip seconds, linear between keys so the push never pauses mid-film (the clip itself
+ // eases out at the end): the desk mess, papers turning into cards, the running workflow, the cards flying into
+ // the laptop; the last frame holds while the headline settles.
+ const KEYS=[[0,0],[.18,2],[.42,7.5],[.62,12],[.8,17],[.88,20.2],[1,20.67]];
  const frameAt=p=>{for(let k=1;k<KEYS.length;k++){const[a,s0]=KEYS[k-1],[b,s1]=KEYS[k];
-  if(p<=b){const t=sm(seg(p,a,b));return Math.min(N-1,Math.round((s0+(s1-s0)*t)*FPS))}}return N-1};
+  if(p<=b)return Math.min(N-1,(s0+(s1-s0)*seg(p,a,b))*FPS)}return N-1};
+ // a clip frame position -> the kept frame at or before it, and how far it is toward the next kept one
+ const posOf=f=>{let lo=0,hi=M-1;while(hi-lo>1){const m=(lo+hi)>>1;if(KEEP[m]<=f)lo=m;else hi=m}
+  if(f>=KEEP[M-1])return [M-1,0];return [lo,cl((f-KEEP[lo])/(KEEP[lo+1]-KEEP[lo]))]};
 
  /* frames: fetch every blob (frame 0 first, then a coarse pass, then the gaps), decode near the playhead */
- const blobs=new Array(N),bmps=new Map(),pending=new Set(),WIN=10;
- let want=0,onFrame=null;
- const order=[];{const seen=new Set();[N-1,0].forEach(i=>{seen.add(i);order.push(i)});
-  for(const step of [8,4,2,1])for(let i=0;i<N;i+=step)if(!seen.has(i)){seen.add(i);order.push(i)}}
+ const blobs=new Array(M),bmps=new Map(),pending=new Set(),WIN=8;
+ let want=0,mix=0,fpos=0,onFrame=null;   // want: kept frame at the playhead; mix: blend toward the next one
+ const order=[];{const seen=new Set();[M-1,0].forEach(i=>{seen.add(i);order.push(i)});
+  for(const step of [8,4,2,1])for(let i=0;i<M;i+=step)if(!seen.has(i)){seen.add(i);order.push(i)}}
  function fetchAll(list){let next=0;const run=()=>{if(next>=list.length)return;const i=list[next++];
    // blob via fetch; where fetch is blocked, fall back to a plain image element
    const viaImg=()=>{const im=new Image();im.src=src(i);return im.decode().then(()=>im)};
@@ -28,67 +36,33 @@ const VFILM=(function(){
   for(let k=0;k<6;k++)run()}
  function decode(i){if(bmps.has(i)||pending.has(i)||!blobs[i])return;pending.add(i);
   createImageBitmap(blobs[i]).then(b=>{pending.delete(i);
-   if(Math.abs(i-want)>WIN+4&&i!==N-1){b.close();return}
-   bmps.set(i,b);if(onFrame)onFrame(i);if(i===want||!bmps.has(want))paint()}).catch(()=>pending.delete(i))}
+   if(Math.abs(i-want)>WIN+4&&i!==M-1){b.close();return}
+   bmps.set(i,b);if(onFrame)onFrame(i);if(i===want||i===want+1||!bmps.has(want))paint()}).catch(()=>pending.delete(i))}
  function slide(){for(let d=0;d<=WIN;d++){decode(want+d);decode(want-d)}
-  for(const [i,b] of bmps)if(Math.abs(i-want)>WIN+4&&i!==N-1){b.close();bmps.delete(i)}}
- function nearest(i){if(bmps.has(i))return i;for(let d=1;d<N;d++){if(bmps.has(i-d))return i-d;if(bmps.has(i+d))return i+d}return -1}
+  for(const [i,b] of bmps)if(Math.abs(i-want)>WIN+4&&i!==M-1){b.close();bmps.delete(i)}}
+ function nearest(i){if(bmps.has(i))return i;for(let d=1;d<M;d++){if(bmps.has(i-d))return i-d;if(bmps.has(i+d))return i+d}return -1}
 
- /* the dashboard's blank fields get sample data, tracked onto the screen frame by frame.
-    MATS[k-M0] maps the flattened screen (1200x900) to clip pixels in frame k (0-based). */
- const M0=111,MATS=[[0.622508,0.00681907,499.021,0.033721,0.524785,152.204,0.000118089,1.33743e-05],[0.621149,0.00680289,499.034,0.0333838,0.524643,153.175,0.000117262,1.32239e-05],[0.620292,0.00648205,499.115,0.0333509,0.523938,154.174,0.000117018,1.25703e-05],[0.619407,0.00607813,499.209,0.0333176,0.523091,154.988,0.000116697,1.1838e-05],[0.618883,0.00602691,499.318,0.0333031,0.522647,155.647,0.000116653,1.17219e-05],[0.618319,0.00593487,499.426,0.0332418,0.522103,156.025,0.000116486,1.15249e-05],[0.617804,0.00559835,499.599,0.0332735,0.521478,156.156,0.000116442,1.10446e-05],[0.617139,0.00549335,499.711,0.0332337,0.520961,156.148,0.000116135,1.08573e-05],[0.616652,0.00544282,499.853,0.0332479,0.520619,156.11,0.000116047,1.08212e-05],[0.61593,0.0054264,500,0.0332414,0.52004,156,0.000115744,1.08528e-05]];
- const MONO='500 16px "JetBrains Mono",monospace',INK='#06141a',LBL='rgba(6,20,26,.68)';
- const LBL2='rgba(160,226,236,.8)',BTN=['rgb(214,246,250)','rgb(176,232,242)'];
- const label=(x,k,text)=>[x,722,200,30,k,[[2,22,'500 18px "JetBrains Mono",monospace',LBL2,text]]];
- const btn=(x,w,k,value)=>[x,766,w,57,k,[[w/2,40,'800 30px Inter,sans-serif',INK,value,'center']],BTN];
- // [x,y,w,h on the flat screen, first frame, [[dx,dy,font,colour,text,align]], repaint colours]
- // the clip's three buttons are thin bars in outlined boxes: each box is filled in one colour to carry a value
- const FIELDS=[
-  [100,104,640,110,111,[[10,52,'700 50px Inter,sans-serif','rgba(236,250,255,.96)','Business pulse'],[12,96,'500 26px Inter,sans-serif','rgba(160,226,236,.82)','Synced · 19 Oct 2026']]],
-  label(119,113,'AMOUNT'),label(470,113,'INVOICE'),label(824,113,'STATUS'),
-  btn(121,251,113,'$4,250.00'),btn(472,254,115,'#INV-2048'),btn(826,256,117,'Paid ✓')
- ];
- function screenData(k,x,y,w,rtl){
-  if(k<M0)return;const m=MATS[k-M0],sc=w/1280;
-  const P=(u,v)=>{const z=m[6]*u+m[7]*v+1,fx=(m[0]*u+m[1]*v+m[2])/z*sc;return [rtl?x+w-fx:x+fx,y+(m[3]*u+m[4]*v+m[5])/z*sc]};
-  ctx.save();ctx.direction='ltr';
-  for(const [u,v,bw,bh,k0,lines,repaint] of FIELDS){const a=seg(k,k0,k0+3),fa=repaint?a:0;if(!a)continue;
-   // a local affine per field; in Arabic the clip is mirrored, so the field is entered from its other side and the text stays readable
-   const A=P(rtl?u+bw:u,v),B=P(rtl?u:u+bw,v),C=P(rtl?u+bw:u,v+bh);
-   ctx.setTransform(dpr*(B[0]-A[0])/bw,dpr*(B[1]-A[1])/bw,dpr*(C[0]-A[0])/bh,dpr*(C[1]-A[1])/bh,dpr*A[0],dpr*A[1]);
-   if(fa){const g=ctx.createLinearGradient(0,0,0,bh);g.addColorStop(0,repaint[0]);g.addColorStop(1,repaint[1]);
-    ctx.globalAlpha=fa;ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(0,0,bw,bh,12):ctx.rect(0,0,bw,bh);ctx.fill()}
-   ctx.globalAlpha=a;
-   for(const [dx,dy,font,col,text,align] of lines){ctx.font=font;ctx.fillStyle=col;ctx.textAlign=align||'left';ctx.fillText(text,dx,dy)}}
-  ctx.restore()}
-
- /* the papers on the desk carry garbled AI lettering; clean titles are tracked onto them until each paper lifts.
-    Per title: [text, paper colour on its left and right, patch spread, page turned round, per frame from 0: [tl.x,tl.y, tr.x,tr.y, bl.x,bl.y] of the title in clip pixels] */
- const TITLES=[["INVOICE","rgb(192,154,123)","rgb(182,146,117)",1,0,[[643.4,330.3,703.4,328.7,643.6,338.3],[643.0,329.1,702.8,327.8,643.2,337.1],[643.2,331.2,702.8,329.4,643.5,339.1],[642.6,330.8,702.3,329.0,642.9,338.8],[642.6,332.4,701.9,330.3,642.9,340.3],[642.4,332.9,701.5,330.8,642.7,340.8],[642.2,333.9,701.0,331.5,642.5,341.7],[642.3,334.3,700.9,331.9,642.7,342.1],[642.1,334.1,700.6,332.4,642.4,341.9],[642.4,332.0,700.3,331.4,642.5,339.8],[642.7,330.0,700.2,330.5,642.6,337.7],[642.8,328.5,700.0,330.2,642.5,336.1],[642.7,328.9,699.9,331.7,642.3,336.5],[642.9,329.0,699.9,333.0,642.3,336.7],[643.1,330.0,700.0,334.6,642.5,337.6],[643.3,331.3,700.2,336.3,642.6,338.9],[642.9,333.7,699.9,338.8,642.2,341.3],[642.4,336.8,699.5,342.0,641.7,344.4],[642.6,340.9,700.0,346.3,641.9,348.6],[642.6,346.1,700.5,352.0,641.8,353.8]]],["STATEMENT","rgb(161,131,106)","rgb(158,128,105)",1,0,[[672.7,494.9,738.6,497.2,672.4,502.8],[672.0,494.0,737.8,496.3,671.7,501.9],[671.6,493.1,737.1,495.8,671.2,501.1],[671.3,492.5,736.4,495.1,671.0,500.4],[670.7,492.3,735.6,495.0,670.4,500.1],[670.2,492.0,734.8,494.7,669.8,499.8],[669.7,492.1,734.1,494.8,669.4,499.9],[669.2,492.5,733.4,495.2,668.9,500.3],[668.6,492.9,732.6,495.5,668.3,500.7],[668.3,493.9,732.1,496.5,668.0,501.7],[667.7,495.0,731.2,497.6,667.4,502.7],[667.2,496.1,730.5,498.7,666.9,503.8],[666.8,497.6,729.7,500.3,666.5,505.2],[666.5,499.2,728.9,502.1,666.1,506.8],[666.2,500.4,728.3,503.7,665.8,507.9],[666.0,501.8,727.3,505.4,665.5,509.2],[667.8,504.5,728.0,508.5,667.3,511.8]]],["REPORT","rgb(205,167,132)","rgb(199,160,126)",1,0,[[398.5,503.0,464.5,503.0,398.5,511.0],[399.1,502.2,465.1,502.0,399.1,510.2],[400.1,502.0,465.7,501.6,400.1,510.0],[400.4,501.4,465.5,500.8,400.4,509.3],[401.0,501.0,466.1,500.7,401.1,508.9],[401.9,500.7,466.7,500.4,401.9,508.5],[402.3,500.7,467.0,500.6,402.3,508.5],[402.7,500.9,467.1,500.7,402.7,508.7]]],["INVOICE","rgb(233,197,161)","rgb(232,195,159)",1,0,[[376.8,345.4,425.2,357.9,374.8,353.1],[376.4,345.2,425.4,357.8,374.4,353.1],[376.8,346.1,426.1,358.4,374.8,354.0],[377.6,346.8,426.3,358.9,375.7,354.6],[378.3,348.6,426.3,360.5,376.4,356.2]]]];
- function deskTitles(k,x,y,w,rtl){
-  const sc=w/1280,P=(fx,fy)=>[rtl?x+w-fx*sc:x+fx*sc,y+fy*sc];
-  ctx.save();ctx.direction='ltr';ctx.textAlign='left';ctx.textBaseline='alphabetic';
-  for(const [text,pl0,pr0,pad,turned,fr] of TITLES){const n=fr.length;if(k>=n)continue;
-   const a=cl((n-k)/3),[ax,ay,bx,by,cx,cy]=fr[k],bw=Math.hypot(bx-ax,by-ay),bh=Math.hypot(cx-ax,cy-ay);
-   // the title's local frame: origin, end of its baseline direction, end of its height direction (clip pixels).
-   // A page lying the other way round reads from its far corner; in Arabic the mirrored clip is entered from the other side.
-   let O=[ax,ay],X=[bx,by],Y=[cx,cy];if(turned)[O,X,Y]=[[bx+cx-ax,by+cy-ay],Y,X];
-   if(rtl)[O,X,Y]=[X,O,[X[0]+Y[0]-O[0],X[1]+Y[1]-O[1]]];
-   const A=P(...O),B=P(...X),C=P(...Y),sw=!!turned!==rtl,pl=sw?pr0:pl0,pr=sw?pl0:pr0;
-   ctx.setTransform(dpr*(B[0]-A[0])/bw,dpr*(B[1]-A[1])/bw,dpr*(C[0]-A[0])/bh,dpr*(C[1]-A[1])/bh,dpr*A[0],dpr*A[1]);
-   // cover the old lettering with a soft-edged patch of the paper's own colour
-   const g=ctx.createLinearGradient(0,0,bw,0);g.addColorStop(0,pl);g.addColorStop(1,pr);ctx.fillStyle=g;
-   for(const [m,o] of [[1.1,.12],[.85,.2],[.6,.35],[.4,.6],[.22,1]]){const e=m*bh*pad;ctx.globalAlpha=a*o;ctx.fillRect(-e,-e,bw+2*e,bh+2*e)}
-   // the new title fills the old one's width; a longer word shrinks to fit
-   const fs=bh/.73;ctx.font=`700 ${fs}px Inter,sans-serif`;if('letterSpacing' in ctx)ctx.letterSpacing=(fs*.06)+'px';
-   const tw=ctx.measureText(text).width,s=Math.min(bw/tw,1.2);
-   ctx.globalAlpha=a*.92;ctx.fillStyle='rgb(38,28,22)';
-   ctx.translate(0,bh/2+(bh/2)*Math.min(s,1));ctx.scale(s,Math.min(s,1));ctx.fillText(text,0,0)}
-  ctx.restore()}
+ /* the laptop's screen becomes a real dashboard once the last cards have flown in. The dashboard is HTML
+    (#film-dash, 1600x960) mapped onto the tracked screen with a CSS homography, so its text stays sharp.
+    QUADS[k-Q0]: screen corners TL,TR,BR,BL in frame k, as fractions of the frame. */
+ const Q0=449 ,QUADS=[[0.53702,0.26016,0.92422,0.27499,0.91135,0.70919,0.52061,0.66329],[0.5367,0.26023,0.92406,0.27507,0.91116,0.70941,0.52027,0.6635],[0.53629,0.26032,0.92389,0.27517,0.91097,0.70963,0.51994,0.66374],[0.5359,0.2604,0.92372,0.27525,0.91079,0.70982,0.51966,0.66399],[0.53557,0.2605,0.92356,0.27534,0.91061,0.71008,0.51935,0.66422],[0.53527,0.2606,0.92339,0.27539,0.91043,0.71031,0.51903,0.66445],[0.53501,0.26067,0.92322,0.27543,0.91026,0.71047,0.51872,0.6646],[0.53482,0.2607,0.92307,0.27544,0.91011,0.71056,0.51846,0.66471],[0.5346,0.26072,0.92286,0.27547,0.90996,0.71066,0.51822,0.6648],[0.53439,0.26073,0.92269,0.27547,0.9098,0.71077,0.51798,0.66489],[0.53421,0.26076,0.92253,0.27545,0.90966,0.71084,0.51778,0.66493],[0.53401,0.26079,0.92235,0.27545,0.9095,0.71096,0.51756,0.66501],[0.53385,0.26079,0.92218,0.27544,0.90938,0.71097,0.51738,0.66504],[0.53375,0.26078,0.92207,0.27539,0.90924,0.71095,0.51724,0.66501],[0.53356,0.26073,0.92195,0.27537,0.90913,0.71087,0.51712,0.66498],[0.53344,0.26065,0.92184,0.2753,0.90905,0.71075,0.51705,0.66489],[0.53334,0.26061,0.92174,0.27525,0.90891,0.71066,0.51693,0.66483],[0.53319,0.2606,0.92162,0.27523,0.90877,0.71067,0.51679,0.66483],[0.53304,0.26058,0.92148,0.27522,0.90863,0.71068,0.51662,0.66483],[0.53291,0.26056,0.92136,0.27519,0.90853,0.71066,0.51647,0.66481],[0.53274,0.26053,0.92126,0.27516,0.9084,0.71064,0.51634,0.66477],[0.53256,0.2605,0.92115,0.27514,0.90828,0.71061,0.51621,0.66475],[0.53244,0.26049,0.92104,0.27512,0.90817,0.71057,0.5161,0.66472],[0.53227,0.26047,0.92088,0.27509,0.90803,0.71054,0.51593,0.6647],[0.53216,0.26044,0.92082,0.27507,0.90795,0.71048,0.51583,0.66468],[0.53207,0.26042,0.92074,0.27505,0.90787,0.71045,0.51575,0.66464],[0.53199,0.2604,0.92067,0.27504,0.90779,0.71042,0.51566,0.66461],[0.53193,0.26039,0.92061,0.27502,0.90775,0.7104,0.5156,0.66458],[0.53187,0.26039,0.92056,0.27501,0.9077,0.71039,0.51554,0.66457],[0.53182,0.26038,0.92052,0.27499,0.90766,0.71037,0.51549,0.66455],[0.53176,0.26039,0.92047,0.27498,0.90761,0.71037,0.51543,0.66455],[0.53174,0.26039,0.92044,0.27498,0.90758,0.71037,0.51538,0.66454],[0.53171,0.26039,0.9204,0.27498,0.90755,0.71036,0.51534,0.66456],[0.53169,0.26038,0.92038,0.27498,0.90753,0.71036,0.51531,0.66456],[0.53168,0.26038,0.92037,0.27499,0.9075,0.71036,0.51529,0.66457],[0.53167,0.26038,0.92037,0.27498,0.9075,0.71037,0.51528,0.66456],[0.53166,0.26039,0.92038,0.27498,0.90751,0.71037,0.51528,0.66455],[0.53165,0.26039,0.92038,0.27498,0.9075,0.71037,0.51527,0.66455],[0.53164,0.2604,0.92037,0.27499,0.9075,0.71038,0.51526,0.66456],[0.53164,0.2604,0.92037,0.27499,0.9075,0.71038,0.51526,0.66456],[0.53163,0.2604,0.92037,0.27499,0.9075,0.71039,0.51526,0.66456],[0.53162,0.2604,0.92037,0.27499,0.9075,0.71039,0.51526,0.66457],[0.53162,0.2604,0.92037,0.27499,0.90749,0.71039,0.51525,0.66457],[0.53162,0.26041,0.92037,0.27499,0.90749,0.71039,0.51524,0.66457],[0.53162,0.26041,0.92037,0.27499,0.9075,0.7104,0.51524,0.66457],[0.53162,0.26041,0.92038,0.275,0.90749,0.71041,0.51523,0.66458],[0.53161,0.26041,0.92038,0.275,0.9075,0.71041,0.51523,0.66458],[0.53162,0.26042,0.92037,0.275,0.90749,0.71042,0.51522,0.66458]];
+ const dash=$('film-dash'),DW=1600,DH=960,DASH_IN=465,DASH_FULL=490;
+ function quadToCss(q){  // unit square -> quad (Heckbert), scaled to the dashboard's box
+  const [[x0,y0],[x1,y1],[x2,y2],[x3,y3]]=q,sx=x0-x1+x2-x3,sy=y0-y1+y2-y3,dx1=x1-x2,dx2=x3-x2,dy1=y1-y2,dy2=y3-y2,det=dx1*dy2-dx2*dy1;
+  const g=(sx*dy2-dx2*sy)/det,h=(dx1*sy-sx*dy1)/det,a=x1-x0+g*x1,b=x3-x0+h*x3,d=y1-y0+g*y1,e=y3-y0+h*y3;
+  return `matrix3d(${a/DW},${d/DW},0,${g/DW},${b/DH},${e/DH},0,${h/DH},0,0,1,0,${x0},${y0},0,1)`}
+ function placeDash(k,x,y,w,h,rtl){
+  if(!dash)return;const on=k>=DASH_IN&&k>=Q0;dash.style.visibility=on?'visible':'hidden';if(!on)return;
+  const c=QUADS[Math.min(k-Q0,QUADS.length-1)],P=i=>[rtl?x+w-c[i*2]*w:x+c[i*2]*w,y+c[i*2+1]*h];
+  // in Arabic the clip is mirrored: map the dashboard's corners to the mirrored ones so its text still reads
+  const q=rtl?[P(1),P(0),P(3),P(2)]:[P(0),P(1),P(2),P(3)];
+  dash.style.transform=quadToCss(q);
+  dash.style.opacity=seg(k,DASH_IN,DASH_IN+6).toFixed(3);   // the screen refreshes first, then its parts appear
+  dash.style.setProperty('--u',seg(k,DASH_IN+3,DASH_FULL).toFixed(3))}
 
  /* drawing */
  let W=0,H=0,dpr=1,mobile=false,p=0,cur=0,target=0,raf=0,textEdge=0;
- const BG='#08121a',SX=[.39,.85],SY=[.22,.86];  // where the screen sits in the clip's last frame
+ const BG='#08121a',SX=[.515,.92],SY=[.26,.71];  // where the screen sits in the clip's last frame
  const bf=sec.querySelector('.bf');
  function layout(){dpr=Math.min(devicePixelRatio||1,2);W=stage.clientWidth;H=stage.clientHeight;mobile=W<=760;
   cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);cv.style.width=W+'px';cv.style.height=H+'px';
@@ -102,13 +76,19 @@ const VFILM=(function(){
    h=H*.6+(Math.min(H*.5,W)-H*.6)*sm(seg(p,.6,.9));w=h*16/9;const fx=.45+(((SX[0]+SX[1])/2)-.45)*sm(seg(p,.25,.8)),f=rtl?1-fx:fx;
    x=W/2-w*f;y=H*.28-h/2-fin*H*.03}
   else{ // cover, then in the finale step back so the screen sits beside the headline, never under it
-   const s0=Math.max(W/1280,H/720),L=rtl?40:textEdge+40,R=rtl?textEdge-40:W-40;
+   const s0=Math.max(W/1280,H/720),L=rtl?32:textEdge+32,R=rtl?textEdge-32:W-32;
    const s1=Math.max(s0*.45,Math.min(s0*.85,(R-L)/((SX[1]-SX[0])*1280))),cf=(SX[0]+SX[1])/2;
    const x1=(L+R)/2-(rtl?1-cf:cf)*1280*s1,y1=H*.5-(SY[0]+SY[1])/2*720*s1;
    const s=s0+(s1-s0)*fin;w=1280*s;h=720*s;x=(W-1280*s0)/2*(1-fin)+x1*fin;y=(H-720*s0)/2*(1-fin)+y1*fin}
   ctx.save();if(rtl){ctx.translate(W,0);ctx.scale(-1,1)}
-  ctx.drawImage(img,rtl?W-x-w:x,y,w,h);ctx.restore();
-  deskTitles(k,x,y,w,rtl);screenData(k,x,y,w,rtl);
+  ctx.drawImage(img,rtl?W-x-w:x,y,w,h);
+  const nx=k===want&&mix>.02?bmps.get(want+1):null;if(nx){ctx.globalAlpha=mix;ctx.drawImage(nx,rtl?W-x-w:x,y,w,h);ctx.globalAlpha=1}
+  ctx.restore();
+  placeDash(k===want?Math.round(fpos):KEEP[k],x,y,w,h,rtl);
+  // in the finale, settle the room behind the headline (the mug sits there) so nothing competes with the words
+  if(!mobile&&fin>0){const e=rtl?W-textEdge:textEdge,g=ctx.createLinearGradient(rtl?W:0,0,rtl?W-e-160:e+160,0);
+   g.addColorStop(0,`rgba(8,18,26,${(.85*fin).toFixed(3)})`);g.addColorStop(e/(e+160),`rgba(8,18,26,${(.7*fin).toFixed(3)})`);g.addColorStop(1,'rgba(8,18,26,0)');
+   ctx.fillStyle=g;ctx.fillRect(0,0,W,H)}
   // feather any picture edge that lands inside the stage
   const F=Math.min(140,w*.12);
   const edge=(x0,y0,x1,y1,rx,ry,rw,rh)=>{const g=ctx.createLinearGradient(x0,y0,x1,y1);g.addColorStop(0,BG);g.addColorStop(1,'rgba(8,18,26,0)');ctx.fillStyle=g;ctx.fillRect(rx,ry,rw,rh)};
@@ -122,7 +102,7 @@ const VFILM=(function(){
   const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.75);
   v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.3)');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
  }
- function render(q){p=q;const f=frameAt(p);if(f!==want){want=f;slide()}paint();
+ function render(q){p=q;fpos=frameAt(p);const [j,t]=posOf(fpos);mix=t;if(j!==want){want=j;slide()}paint();
   beats.forEach(b=>{let a=0;if(p>=b.in&&p<=b.out){a=p<b.peak?(p-b.in)/Math.max(1e-4,b.peak-b.in):(b.out>1.5?1:1-(p-b.peak)/Math.max(1e-4,b.out-b.peak))}
    a=cl(a);b.el.style.opacity=a.toFixed(3);b.el.style.visibility=a<.01?'hidden':'visible';
    if(!b.el.classList.contains('bf'))b.el.style.transform=`translateY(${((1-a)*14*(p<b.peak?1:-1)).toFixed(1)}px)`});
@@ -139,7 +119,7 @@ const VFILM=(function(){
  refresh();
  // 1080p frames where the picture is drawn wide on a large screen; phones keep the lighter 1280 set
  if(HAS_HD&&!mobile&&Math.max(W/1280,H/720)*1280*dpr>1500&&!(navigator.connection&&navigator.connection.saveData))DIR='frames-hd';
- if(still)fetchAll([N-1]);else fetchAll(order);
+ if(still)fetchAll([M-1]);else fetchAll(order);
  // screenshots wait until the frame for the current scroll position is on the canvas
  (document.fonts?document.fonts.ready:Promise.resolve()).then(()=>{refresh();
   const done=()=>requestAnimationFrame(()=>{window.__ready=true});

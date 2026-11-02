@@ -459,8 +459,8 @@ html[lang=ar] .film-video .film-scrim{background:linear-gradient(270deg,rgba(8,1
 html[lang=ar] .film-video .beat.bf{width:min(540px,calc(100vw - 40px))}
 @media(max-width:760px){html[lang=ar] .film-video .beat.bf{width:auto}}
 
-/* ===== Hero film: the laptop dashboard (video3.html) =====
-   A 1600x960 HTML screen; film-video3.js maps it onto the tracked laptop screen with matrix3d. */
+/* ===== Hero film: the laptop dashboard =====
+   A 1600x960 HTML screen; film-video.js maps it onto the tracked laptop screen with matrix3d. */
 .film-dash{position:absolute;left:0;top:0;width:1600px;height:960px;transform-origin:0 0;visibility:hidden;pointer-events:none;overflow:hidden;
  display:flex;flex-direction:column;padding:44px 56px 48px;background:linear-gradient(180deg,#f3fafa,#e6f3f3);color:#0b2a30;
  font-family:Inter,system-ui,sans-serif;direction:ltr;text-align:left;line-height:1.2;letter-spacing:0}
