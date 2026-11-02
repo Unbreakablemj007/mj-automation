@@ -458,3 +458,39 @@ html[lang=ar] .film-video .film-scrim{background:linear-gradient(270deg,rgba(8,1
 }
 html[lang=ar] .film-video .beat.bf{width:min(540px,calc(100vw - 40px))}
 @media(max-width:760px){html[lang=ar] .film-video .beat.bf{width:auto}}
+
+/* ===== Hero film: the laptop dashboard (video3.html) =====
+   A 1600x960 HTML screen; film-video3.js maps it onto the tracked laptop screen with matrix3d. */
+.film-dash{position:absolute;left:0;top:0;width:1600px;height:960px;transform-origin:0 0;visibility:hidden;pointer-events:none;overflow:hidden;
+ display:flex;flex-direction:column;padding:44px 56px 48px;background:linear-gradient(180deg,#f3fafa,#e6f3f3);color:#0b2a30;
+ font-family:Inter,system-ui,sans-serif;direction:ltr;text-align:left;line-height:1.2;letter-spacing:0}
+.film-dash .fd-part{opacity:clamp(0,calc(var(--u,1)*5 - var(--i)),1)}
+.fd-top{display:flex;align-items:center;gap:22px;margin-bottom:34px}
+.fd-logo{width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#2dd4bf,#3b82f6);display:grid;place-items:center;color:#fff;font-weight:800;font-size:28px;letter-spacing:-1px}
+.fd-top h2{font-size:46px;font-weight:800;letter-spacing:-1.2px;margin:0}
+.fd-top small{display:block;font-size:30px;color:#4f7378;font-weight:500;margin-top:2px}
+.fd-pill{margin-left:auto;display:flex;align-items:center;gap:14px;background:#dff7f2;border:2px solid #9ee6d9;color:#0b6b60;font-weight:700;font-size:26px;padding:14px 26px;border-radius:999px}
+.fd-pill i{width:16px;height:16px;border-radius:50%;background:#10b981;box-shadow:0 0 0 6px rgba(16,185,129,.18)}
+.fd-flow{display:flex;align-items:center;background:#fff;border:2px solid #cfe6e6;border-radius:26px;padding:26px 34px;margin-bottom:28px}
+.fd-step{display:flex;align-items:center;gap:16px;font-size:28px;font-weight:700;white-space:nowrap}
+.fd-ic{width:58px;height:58px;border-radius:16px;background:#e3f6f4;display:grid;place-items:center;position:relative}
+.fd-ic svg{width:32px;height:32px;stroke:#0e9488;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fd-ic b{position:absolute;right:-8px;bottom:-8px;width:28px;height:28px;border-radius:50%;background:#10b981;border:3px solid #fff;display:grid;place-items:center}
+.fd-ic b svg{width:14px;height:14px;stroke:#fff;stroke-width:4}
+.fd-link{flex:1;height:4px;margin:0 18px;border-radius:4px;background:linear-gradient(90deg,#5eead4,#3b82f6)}
+.fd-row{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:28px}
+.fd-tile{background:#fff;border:2px solid #cfe6e6;border-radius:24px;padding:24px 28px}
+.fd-tile small{font-size:28px;color:#4f7378;font-weight:600}
+.fd-tile b{display:flex;align-items:center;gap:12px;font-size:44px;font-weight:800;letter-spacing:-1px;margin-top:6px}
+.fd-tile b span{font-size:26px;color:#10b981}
+.fd-tile em{display:block;font-style:normal;font-size:27px;color:#4f7378;margin-top:4px}
+.fd-bottom{display:grid;grid-template-columns:1.25fr 1fr;gap:22px;flex:1;min-height:0}
+.fd-panel{background:#fff;border:2px solid #cfe6e6;border-radius:24px;padding:24px 28px;display:flex;flex-direction:column;min-height:0}
+.fd-panel h3{font-size:29px;font-weight:700;color:#4f7378;margin:0 0 8px;display:flex;justify-content:space-between}
+.fd-panel h3 span{color:#10b981}
+.fd-panel>svg{flex:1;width:100%;margin-top:10px}
+.fd-feed div{display:flex;align-items:center;gap:16px;font-size:28px;font-weight:600;flex:1;border-bottom:2px solid #edf5f5}
+.fd-feed div:last-child{border:0}
+.fd-feed i{flex:none;width:30px;height:30px;border-radius:50%;background:#10b981;display:grid;place-items:center}
+.fd-feed i svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.fd-feed s{margin-left:auto;text-decoration:none;color:#4f7378;font-weight:500}
